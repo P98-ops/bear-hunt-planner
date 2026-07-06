@@ -94,6 +94,19 @@
   .grid{display:grid;grid-template-columns: 380px 1fr;gap:22px;align-items:start;}
   @media (max-width: 900px){ .grid{grid-template-columns: 1fr;} }
 
+  @media (max-width: 600px){
+    body{ font-size:17px; }
+    .check{ padding:11px 0; gap:10px; font-size:15px; }
+    .check input{ width:22px; height:22px; }
+    input[type=number], input[type=text], select{
+      font-size:16px; padding:12px 12px; /* 16px avoids iOS auto-zoom on focus */
+    }
+    .field label{ font-size:13.5px; }
+    .swatch-label{ font-size:13.5px; }
+    button.btn, a.btn{ padding:11px 18px; font-size:14px; }
+    .row3, .row2{ gap:8px; }
+  }
+
   .card{
     background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);
     padding:18px 18px 20px;margin-bottom:18px;box-shadow:var(--shadow);
@@ -306,8 +319,8 @@
         <div class="field"><label>Master VALORA (flat host bonus)</label><input type="number" min="0" id="valora" value="0"></div>
         <div class="field"><label>Host Minimum Infantry <span class="hint">(applies to Host Rally only)</span></label><input type="number" min="0" id="hostMinInfantry" value="5000"></div>
         <div class="subgroup">
-          <div class="field"><label>Joiner Capacity Limit <span class="hint">(per Joiner 1-4)</span></label><input type="number" min="0" id="joinerCapacity" value="100000"></div>
-          <div class="field"><label>No Hero March Capacity <span class="hint">(per Joiner 5-6, if lower)</span></label><input type="number" min="0" id="noHeroCapacity" value="0"></div>
+          <div class="field"><label>Joiner Capacity Limit</label><input type="number" min="0" id="joinerCapacity" value="100000"></div>
+          <div class="field"><label>No Hero March Capacity</label><input type="number" min="0" id="noHeroCapacity" value="0"></div>
           <div class="field"><label>Joining Marches (0-6)</label><input type="number" min="0" max="6" id="joiningMarches" value="6"></div>
           <div class="check"><input type="checkbox" id="applyBoosts" checked><label for="applyBoosts">Apply boosts to Joiners too</label></div>
         </div>
