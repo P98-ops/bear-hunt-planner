@@ -1,0 +1,1025 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>P98 Bear Trap Planner — Private March Planner</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@600;700;800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<style>
+  :root{
+    --bg:#1c2230;
+    --surface:#242c3d;
+    --surface-2:#2c3650;
+    --surface-3:#333f5c;
+    --ink:#eef1f6;
+    --ink-muted:#9aa4ba;
+    --ink-faint:#6b7690;
+    --gold:#c9a24d;
+    --gold-soft:#d9bb74;
+    --infantry:#6f9bd1;
+    --cavalry:#c1653a;
+    --archers:#6fae6a;
+    --danger:#d1685e;
+    --warn:#d9a63f;
+    --ok:#6fae6a;
+    --line: rgba(238,241,246,0.10);
+    --radius: 10px;
+    --shadow: 0 10px 30px rgba(0,0,0,0.35);
+    font-size:16px;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:
+      radial-gradient(1200px 600px at 15% -10%, rgba(201,162,77,0.08), transparent 60%),
+      var(--bg);
+    color:var(--ink);
+    font-family:'Inter', system-ui, sans-serif;
+    line-height:1.5;
+    min-height:100vh;
+  }
+  .wrap{max-width:1180px;margin:0 auto;padding:28px 20px 80px;}
+
+  /* ---------- Masthead ---------- */
+  header.masthead{
+    display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;
+    gap:16px;padding-bottom:18px;margin-bottom:26px;
+    border-bottom:2px solid var(--gold);
+  }
+  .brand-eyebrow{
+    font-family:'JetBrains Mono', monospace;
+    font-size:12px;letter-spacing:.16em;text-transform:uppercase;
+    color:var(--gold-soft);margin:0 0 4px;
+  }
+  h1.brand{
+    font-family:'Big Shoulders Display', sans-serif;
+    font-weight:800;font-size:clamp(32px,5vw,52px);letter-spacing:.01em;
+    margin:0;color:var(--ink);text-transform:uppercase;line-height:0.95;
+  }
+  .brand small{display:block;font-size:0.38em;color:var(--gold-soft);font-weight:600;letter-spacing:.08em;margin-top:6px;}
+  .masthead-meta{
+    text-align:right;font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--ink-muted);
+    max-width:280px;
+  }
+  .privacy-pill{
+    display:inline-flex;align-items:center;gap:6px;
+    background:var(--surface-2);border:1px solid var(--line);border-radius:999px;
+    padding:6px 12px;font-size:12px;color:var(--ink-muted);margin-top:8px;
+  }
+  .privacy-pill .dot{width:7px;height:7px;border-radius:50%;background:var(--ok);flex:none;}
+
+  /* ---------- Instructions ---------- */
+  details.howto{
+    background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);
+    margin-bottom:22px;overflow:hidden;
+  }
+  details.howto > summary{
+    cursor:pointer;list-style:none;padding:14px 18px;display:flex;align-items:center;gap:10px;
+    font-weight:600;font-size:14px;color:var(--gold-soft);
+  }
+  details.howto > summary::-webkit-details-marker{display:none;}
+  details.howto > summary::before{content:"▸";display:inline-block;transition:transform .15s ease;color:var(--gold);}
+  details.howto[open] > summary::before{transform:rotate(90deg);}
+  .howto-body{padding:0 18px 18px;color:var(--ink-muted);font-size:14px;}
+  .howto-body h3{color:var(--ink);font-size:13px;text-transform:uppercase;letter-spacing:.06em;margin:16px 0 6px;}
+  .howto-body h3:first-child{margin-top:2px;}
+  .howto-body ul{margin:0;padding-left:18px;}
+  .howto-body li{margin:4px 0;}
+  .howto-body code{background:var(--surface-2);padding:1px 6px;border-radius:4px;font-family:'JetBrains Mono',monospace;font-size:12.5px;color:var(--gold-soft);}
+
+  /* ---------- Layout ---------- */
+  .grid{display:grid;grid-template-columns: 380px 1fr;gap:22px;align-items:start;}
+  @media (max-width: 900px){ .grid{grid-template-columns: 1fr;} }
+
+  .card{
+    background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);
+    padding:18px 18px 20px;margin-bottom:18px;box-shadow:var(--shadow);
+  }
+  .card h2{
+    font-family:'Big Shoulders Display', sans-serif;font-weight:700;font-size:20px;
+    letter-spacing:.03em;text-transform:uppercase;margin:0 0 14px;color:var(--gold-soft);
+    display:flex;align-items:center;gap:8px;
+  }
+  .card h2 .rule{flex:1;height:1px;background:var(--line);}
+
+  .field{margin-bottom:12px;}
+  .field label{display:block;font-size:12.5px;color:var(--ink-muted);margin-bottom:5px;}
+  .field .hint{font-size:11px;color:var(--ink-faint);margin-top:4px;}
+  input[type=number], input[type=text], select{
+    width:100%;background:var(--surface-2);border:1px solid var(--line);border-radius:7px;
+    color:var(--ink);padding:9px 10px;font-family:'JetBrains Mono',monospace;font-size:14px;
+  }
+  select{cursor:pointer;}
+  input[type=number]:focus-visible, input[type=text]:focus-visible, input[type=checkbox]:focus-visible, select:focus-visible, summary:focus-visible, button:focus-visible{
+    outline:2px solid var(--gold);outline-offset:2px;
+  }
+  .row3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;}
+  .row2{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;}
+  .check{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--ink);padding:8px 0;}
+  .check input{width:16px;height:16px;accent-color:var(--gold);}
+  .subgroup{border-top:1px dashed var(--line);margin-top:14px;padding-top:14px;}
+  .swatch-label{display:flex;align-items:center;gap:6px;}
+  .swatch{width:9px;height:9px;border-radius:2px;flex:none;}
+  .swatch.inf{background:var(--infantry);} .swatch.cav{background:var(--cavalry);} .swatch.arch{background:var(--archers);}
+
+  .ratio-check{font-family:'JetBrains Mono',monospace;font-size:12px;padding:6px 10px;border-radius:6px;margin-top:6px;display:inline-block;}
+  .ratio-check.ok{background:rgba(111,174,106,0.15);color:var(--ok);}
+  .ratio-check.bad{background:rgba(209,104,94,0.15);color:var(--danger);}
+
+  /* ---------- Results ---------- */
+  .plan-header{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:12px;flex-wrap:wrap;gap:8px;}
+  .totals-strip{display:flex;gap:14px;flex-wrap:wrap;font-family:'JetBrains Mono',monospace;font-size:12.5px;color:var(--ink-muted);}
+  .totals-strip b{color:var(--ink);font-weight:600;}
+
+  .pill{font-family:'JetBrains Mono',monospace;font-size:11px;padding:3px 9px;border-radius:999px;letter-spacing:.03em;white-space:nowrap;}
+  .pill.ok{background:rgba(111,174,106,0.18);color:var(--ok);}
+  .pill.warn{background:rgba(217,165,63,0.18);color:var(--warn);}
+  .pill.bad{background:rgba(209,104,94,0.18);color:var(--danger);}
+  .pill.off{background:rgba(154,164,186,0.14);color:var(--ink-muted);}
+
+  .legend{display:flex;flex-wrap:wrap;align-items:center;gap:16px;margin-bottom:14px;font-size:12px;color:var(--ink-muted);}
+  .legend-note{font-size:11.5px;color:var(--ink-faint);font-style:italic;}
+
+  #marchesCapture{background:var(--surface);padding:2px;}
+  .table-scroll{overflow-x:auto;border:1px solid var(--line);border-radius:9px;}
+  table.marches-table{width:100%;border-collapse:collapse;min-width:560px;}
+  table.marches-table thead th{
+    font-family:'JetBrains Mono',monospace;font-size:11px;text-transform:uppercase;letter-spacing:.05em;
+    color:var(--ink-muted);text-align:left;padding:10px 12px;background:var(--surface-3);
+    border-bottom:1px solid var(--line);white-space:nowrap;
+  }
+  table.marches-table thead th.num{text-align:right;}
+  table.marches-table thead th.col-inf{color:var(--infantry);}
+  table.marches-table thead th.col-cav{color:var(--cavalry);}
+  table.marches-table thead th.col-arch{color:var(--archers);}
+  table.marches-table tbody td{
+    padding:11px 12px;font-family:'JetBrains Mono',monospace;font-size:14.5px;
+    border-bottom:1px solid var(--line);vertical-align:middle;
+  }
+  table.marches-table tbody tr:last-child td{border-bottom:none;}
+  table.marches-table td.num{text-align:right;font-weight:600;}
+  table.marches-table td.col-inf{color:var(--infantry);}
+  table.marches-table td.col-cav{color:var(--cavalry);}
+  table.marches-table td.col-arch{color:var(--archers);}
+  table.marches-table td.name-cell{font-family:'Big Shoulders Display',sans-serif;font-weight:700;font-size:16px;letter-spacing:.02em;text-transform:uppercase;white-space:nowrap;}
+  table.marches-table .mini-bar{height:5px;border-radius:3px;overflow:hidden;display:flex;background:var(--surface-3);margin-top:6px;width:88px;}
+  table.marches-table .mini-bar span{height:100%;}
+  table.marches-table .mini-bar .b-inf{background:var(--infantry);} table.marches-table .mini-bar .b-cav{background:var(--cavalry);} table.marches-table .mini-bar .b-arch{background:var(--archers);}
+  tr.row-ok{background:rgba(111,174,106,0.06);}
+  tr.row-bad{background:rgba(209,104,94,0.08);}
+  tr.row-warn{background:rgba(217,165,63,0.07);}
+  tr.row-off td{color:var(--ink-faint);}
+  tr.row-off .name-cell{color:var(--ink-muted);}
+
+  .summary-card{
+    background:linear-gradient(160deg, var(--surface-2), var(--surface));
+    border:1px solid var(--gold); border-image: none;
+  }
+  .summary-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:14px;}
+  .summary-grid .item{background:var(--surface-2);border-radius:8px;padding:10px 12px;}
+  .summary-grid .item .n{font-family:'JetBrains Mono',monospace;font-size:19px;font-weight:600;}
+  .summary-grid .item .l{font-size:11px;color:var(--ink-muted);text-transform:uppercase;letter-spacing:.05em;margin-top:2px;}
+
+  /* ---------- Buttons / data controls ---------- */
+  .actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:6px;}
+  button.btn{
+    font-family:'Inter',sans-serif;font-weight:600;font-size:13px;cursor:pointer;
+    border-radius:7px;padding:9px 16px;border:1px solid var(--line);
+    background:var(--surface-2);color:var(--ink);transition:background .12s ease, border-color .12s ease;
+  }
+  button.btn:hover{background:var(--surface-3);border-color:var(--gold-soft);}
+  button.btn.gold{background:var(--gold);border-color:var(--gold);color:#1c2230;}
+  button.btn.gold:hover{background:var(--gold-soft);}
+  button.btn.danger-outline{color:var(--danger);border-color:rgba(209,104,94,0.4);background:transparent;}
+  button.btn.danger-outline:hover{background:rgba(209,104,94,0.1);}
+  a.btn.frakinator-link{
+    display:inline-flex;align-items:center;gap:6px;text-decoration:none;
+    background:#1a73e8;border-color:#1a73e8;color:#ffffff;
+  }
+  a.btn.frakinator-link:hover{background:#3384ea;border-color:#3384ea;}
+  #presetImportFile{display:none;}
+
+  footer{margin-top:30px;text-align:center;color:var(--ink-faint);font-size:12px;}
+  footer a{color:var(--gold-soft);}
+
+  /* ---------- Export presets modal ---------- */
+  .modal-overlay{
+    display:none;position:fixed;inset:0;background:rgba(10,13,20,0.65);
+    align-items:center;justify-content:center;z-index:100;padding:20px;
+  }
+  .modal-box{
+    background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);
+    box-shadow:var(--shadow);padding:20px 22px;max-width:420px;width:100%;
+    max-height:80vh;display:flex;flex-direction:column;
+  }
+  .modal-box h3{
+    font-family:'Big Shoulders Display',sans-serif;font-weight:700;font-size:19px;
+    text-transform:uppercase;letter-spacing:.02em;color:var(--gold-soft);margin:0 0 12px;
+  }
+  .modal-actions-row{display:flex;gap:8px;margin-bottom:10px;}
+  .modal-checklist{overflow-y:auto;border:1px solid var(--line);border-radius:7px;padding:6px 4px;flex:1;min-height:60px;}
+  .modal-check-row{display:flex;align-items:center;gap:8px;padding:7px 8px;font-size:13.5px;border-radius:5px;}
+  .modal-check-row:hover{background:var(--surface-2);}
+  .modal-check-row input{width:15px;height:15px;accent-color:var(--gold);flex:none;}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="masthead">
+    <div>
+      <p class="brand-eyebrow">Kingshot · Alliance Operations</p>
+      <h1 class="brand">P98 Bear Trap Planner<small>Private March Planner</small></h1>
+    </div>
+    <div class="masthead-meta">
+      <div>Planner by <b style="color:var(--gold-soft);">P98</b></div>
+      <div>Everything below runs only in this browser tab.</div>
+      <div class="privacy-pill"><span class="dot"></span> No account, no server, nothing shared</div>
+    </div>
+  </header>
+
+  <details class="howto">
+    <summary>How to use this planner</summary>
+    <div class="howto-body">
+      <h3>What it does</h3>
+      <ul>
+        <li>Enter your troop totals and march capacities once, and it works out the best Host Rally + up to 6 Joiner marches to send for Bear Hunt.</li>
+        <li>Your numbers auto-save to <em>this browser</em> as you type — reopen the page later and they're still here. Nothing is sent anywhere.</li>
+      </ul>
+      <h3>Getting your numbers</h3>
+      <ul>
+        <li><b>Frakinator ratio</b> — open the <a href="https://frakinator.streamlit.app/" target="_blank" rel="noopener">Frakinator tool</a> with your hero screenshots to get your optimal Host Infantry/Cavalry/Archers split, then enter it under "Host Ratio".</li>
+        <li><b>Joiner ratio</b> defaults to 10% / 10% / 80% — a safe split that keeps some Infantry and Cavalry in every Joiner march instead of sending 100% of one troop type. Adjust it if you like.</li>
+      </ul>
+      <h3>Key options</h3>
+      <ul>
+        <li><b>Use Host Rally?</b> — turn this off if you only want to send Joiner marches (all your troops become available to Joiners instead).</li>
+        <li><b>Master VALORA</b> and <b>boosts</b> (Pet Bison, Marshal, City Bonus cap) all add capacity on top of your base march sizes.</li>
+        <li>The <code>Host Ratio</code> and <code>Joiner Ratio</code> checks should read <b>OK</b> — if not, your three percentages don't add to 100%.</li>
+      </ul>
+      <h3>Saving and backing up your data</h3>
+      <ul>
+        <li>Save your current numbers as a named preset (e.g. a player's name), then use <b>Export Presets</b> to download a backup — you'll be able to choose exactly which presets to include.</li>
+        <li>Use <b>Import Presets</b> to load that file back in, here or on any other browser or device.</li>
+      </ul>
+    </div>
+  </details>
+
+  <div class="grid">
+    <!-- LEFT: INPUTS -->
+    <div>
+      <div class="card" id="presetsCard">
+        <h2>Player Presets <span class="rule"></span></h2>
+        <div class="field">
+          <label>Load a saved preset</label>
+          <select id="presetSelect"><option value="">— Current / Unsaved —</option></select>
+        </div>
+        <div class="actions">
+          <button class="btn gold" id="presetSaveBtn">💾 Save As New</button>
+          <button class="btn" id="presetUpdateBtn">Update Selected</button>
+          <button class="btn danger-outline" id="presetDeleteBtn">Delete Selected</button>
+          <button class="btn danger-outline" id="presetDeleteAllBtn">Delete All</button>
+        </div>
+        <div class="actions" style="margin-top:8px;">
+          <button class="btn" id="presetExportBtn">⬇ Export Presets</button>
+          <button class="btn" id="presetImportBtn">⬆ Import Presets</button>
+          <input type="file" id="presetImportFile" accept="application/json">
+        </div>
+        <div class="hint" style="margin-top:10px;">Save separate setups (different players, or your own scenarios) and switch between them instantly. Stored only in this browser — nothing is shared. Export lets you pick which presets to include; Import moves them to another device or browser.</div>
+      </div>
+
+      <div class="card">
+        <h2>Troop Totals <span class="rule"></span></h2>
+        <div class="field"><label class="swatch-label"><span class="swatch inf"></span>Infantry Total</label><input type="number" min="0" id="infantry" value="0"></div>
+        <div class="field"><label class="swatch-label"><span class="swatch cav"></span>Cavalry Total</label><input type="number" min="0" id="cavalry" value="0"></div>
+        <div class="field"><label class="swatch-label"><span class="swatch arch"></span>Archers Total</label><input type="number" min="0" id="archers" value="0"></div>
+        <div class="field hint" id="troopsTotalHint">Troops Total: 0</div>
+      </div>
+
+      <div class="card">
+        <h2>March Capacities <span class="rule"></span></h2>
+        <div class="check"><input type="checkbox" id="useHostRally" checked><label for="useHostRally">Use Host Rally?</label></div>
+        <div class="field"><label>Host March Capacity</label><input type="number" min="0" id="hostCapacity" value="0"></div>
+        <div class="field"><label>Master VALORA (flat host bonus)</label><input type="number" min="0" id="valora" value="0"></div>
+        <div class="field"><label>Host Minimum Infantry <span class="hint">(applies to Host Rally only)</span></label><input type="number" min="0" id="hostMinInfantry" value="5000"></div>
+        <div class="subgroup">
+          <div class="field"><label>Joiner Capacity Limit <span class="hint">(per Joiner 1-4)</span></label><input type="number" min="0" id="joinerCapacity" value="100000"></div>
+          <div class="field"><label>No Hero March Capacity <span class="hint">(per Joiner 5-6, if lower)</span></label><input type="number" min="0" id="noHeroCapacity" value="0"></div>
+          <div class="field"><label>Joining Marches (0-6)</label><input type="number" min="0" max="6" id="joiningMarches" value="6"></div>
+          <div class="check"><input type="checkbox" id="applyBoosts" checked><label for="applyBoosts">Apply boosts to Joiners too</label></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>Ratios <span class="rule"></span></h2>
+        <a href="https://frakinator.streamlit.app/" target="_blank" rel="noopener" class="btn frakinator-link">Open Frakinator ↗</a>
+        <label style="font-size:12.5px;color:var(--ink-muted);display:block;margin-top:12px;">Host Ratio (from Frakinator)</label>
+        <div class="row3" style="margin-top:6px;">
+          <div><label class="hint swatch-label"><span class="swatch inf"></span>Inf %</label><input type="number" min="0" max="100" id="hInf" value="3"></div>
+          <div><label class="hint swatch-label"><span class="swatch cav"></span>Cav %</label><input type="number" min="0" max="100" id="hCav" value="34"></div>
+          <div><label class="hint swatch-label"><span class="swatch arch"></span>Arch %</label><input type="number" min="0" max="100" id="hArch" value="63"></div>
+        </div>
+        <div id="hostRatioCheck" class="ratio-check ok">Host ratio: 100% OK</div>
+
+        <div class="subgroup">
+          <label style="font-size:12.5px;color:var(--ink-muted);">Joiner Ratio <span class="hint">(your own split, independent of Host)</span></label>
+          <div class="row3" style="margin-top:6px;">
+            <div><label class="hint swatch-label"><span class="swatch inf"></span>Inf %</label><input type="number" min="0" max="100" id="jInf" value="10"></div>
+            <div><label class="hint swatch-label"><span class="swatch cav"></span>Cav %</label><input type="number" min="0" max="100" id="jCav" value="10"></div>
+            <div><label class="hint swatch-label"><span class="swatch arch"></span>Arch %</label><input type="number" min="0" max="100" id="jArch" value="80"></div>
+          </div>
+          <div id="joinerRatioCheck" class="ratio-check ok">Joiner ratio: 100% OK</div>
+          <div class="field" style="margin-top:10px;"><label>Optional Joiner Infantry Floor % <span class="hint">(minimum guarantee per Joiner)</span></label><input type="number" min="0" max="100" id="floorPct" value="0"></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>Capacity Boosts <span class="rule"></span></h2>
+        <div class="row2">
+          <div class="check"><input type="checkbox" id="bisonOn"><label for="bisonOn">Pet Bison</label></div>
+          <input type="number" min="0" id="bisonAmt" value="6000">
+        </div>
+        <div class="row2" style="margin-top:8px;">
+          <div class="check"><input type="checkbox" id="marshalOn"><label for="marshalOn">Marshal</label></div>
+          <select id="marshalAmt">
+            <option value="2500">2,500 (Inner Castle)</option>
+            <option value="3750">3,750 (KvK Castle)</option>
+          </select>
+        </div>
+        <div class="subgroup">
+          <div class="check"><input type="checkbox" id="cap10"><label for="cap10">City Bonus deployment cap 10%</label></div>
+          <div class="check"><input type="checkbox" id="cap20"><label for="cap20">City Bonus deployment cap 20%</label></div>
+          <div class="hint">Only one cap applies — selecting one turns the other off.</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>Your Data <span class="rule"></span></h2>
+        <div class="actions">
+          <button class="btn danger-outline" id="resetBtn">Reset All</button>
+        </div>
+        <div class="hint" style="margin-top:10px;">Auto-saves to this browser as you type. Use the Player Presets card above to back up or move your data — Export/Import Presets covers everything, including whatever's currently in the form if you save it as a preset first.</div>
+      </div>
+    </div>
+
+    <!-- RIGHT: RESULTS -->
+    <div>
+      <div class="card summary-card">
+        <h2>Deployment Summary <span class="rule"></span></h2>
+        <div class="summary-grid" id="summaryGrid"></div>
+      </div>
+
+      <div class="card">
+        <div class="plan-header">
+          <h2 style="margin:0;">Recommended Marches</h2>
+          <button class="btn gold" id="exportJpgBtn">📷 Export as JPG</button>
+        </div>
+        <div class="legend">
+          <span class="swatch-label"><span class="swatch inf"></span>Infantry</span>
+          <span class="swatch-label"><span class="swatch cav"></span>Cavalry</span>
+          <span class="swatch-label"><span class="swatch arch"></span>Archers</span>
+          <span class="legend-note">Joiner 5 &amp; 6 are kept identical whenever possible — any leftover troops from uneven division go to Joiner 1-4 instead.</span>
+        </div>
+        <div id="marchesCapture">
+          <div class="table-scroll">
+            <table class="marches-table">
+              <thead>
+                <tr>
+                  <th class="col-march">March</th>
+                  <th class="num">Capacity</th>
+                  <th class="num col-inf">Infantry</th>
+                  <th class="num col-cav">Cavalry</th>
+                  <th class="num col-arch">Archers</th>
+                  <th class="num">Total</th>
+                  <th class="col-status">Status</th>
+                </tr>
+              </thead>
+              <tbody id="marchTableBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer>Built by P98 for Kingshot alliance planning. Runs entirely in your browser — your troop counts never leave this device. · <span id="lastSaved"></span></footer>
+</div>
+
+<div class="modal-overlay" id="exportModalOverlay">
+  <div class="modal-box">
+    <h3>Choose Presets to Export</h3>
+    <div class="modal-actions-row">
+      <button class="btn" id="selectAllPresetsBtn" type="button">Select All</button>
+      <button class="btn" id="selectNonePresetsBtn" type="button">Select None</button>
+    </div>
+    <div class="modal-checklist" id="exportPresetChecklist"></div>
+    <div class="actions" style="margin-top:14px;">
+      <button class="btn gold" id="confirmExportPresetsBtn">⬇ Export Selected</button>
+      <button class="btn" id="cancelExportPresetsBtn">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  "use strict";
+
+  const ids = ['infantry','cavalry','archers','useHostRally','hostCapacity','valora','hostMinInfantry',
+    'joinerCapacity','noHeroCapacity','joiningMarches','applyBoosts',
+    'hInf','hCav','hArch','jInf','jCav','jArch','floorPct',
+    'bisonOn','bisonAmt','marshalOn','marshalAmt','cap10','cap20'];
+
+  const STORAGE_KEY = 'bearHuntWarRoom.v1';
+
+  function el(id){ return document.getElementById(id); }
+
+  // Guards against typos and invalid input: a stray minus sign or empty/non-numeric
+  // field is treated as 0 rather than propagating a negative or NaN value through
+  // every downstream calculation (previously, typing e.g. "-500" infantry would show
+  // up as literally -500 in "Infantry Remaining" instead of being caught).
+  function readNum(node){
+    const n = Number(node.value);
+    if (!isFinite(n) || isNaN(n)) return 0;
+    return Math.max(0, n);
+  }
+
+  function readState(){
+    const s = {};
+    ids.forEach(id=>{
+      const node = el(id);
+      s[id] = node.type === 'checkbox' ? node.checked : readNum(node);
+    });
+    return s;
+  }
+
+  function writeState(s){
+    ids.forEach(id=>{
+      if (!(id in s)) return;
+      const node = el(id);
+      if (node.type === 'checkbox') node.checked = !!s[id];
+      else node.value = s[id];
+    });
+  }
+
+  function save(){
+    const s = readState();
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(s));
+      el('lastSaved').textContent = 'Saved ' + new Date().toLocaleTimeString();
+    } catch(e){ /* storage unavailable, ignore */ }
+  }
+
+  function load(){
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (raw) writeState(JSON.parse(raw));
+    } catch(e){ /* ignore corrupt data */ }
+  }
+
+  // ---------- presets: separate named saved setups, switchable via dropdown ----------
+  const PRESETS_KEY = 'bearHuntWarRoom.presets.v1';
+  const LAST_PRESET_KEY = 'bearHuntWarRoom.lastPreset.v1';
+
+  function escapeHtml(str){
+    return String(str).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  }
+
+  function loadPresets(){
+    try { return JSON.parse(localStorage.getItem(PRESETS_KEY) || '{}'); } catch(e){ return {}; }
+  }
+
+  function savePresets(obj){
+    try { localStorage.setItem(PRESETS_KEY, JSON.stringify(obj)); } catch(e){ /* storage unavailable, ignore */ }
+  }
+
+  function refreshPresetSelect(selectedName){
+    const presets = loadPresets();
+    const names = Object.keys(presets).sort((a,b)=>a.localeCompare(b));
+    const sel = el('presetSelect');
+    sel.innerHTML = '<option value="">— Current / Unsaved —</option>' +
+      names.map(n => `<option value="${escapeHtml(n)}">${escapeHtml(n)}</option>`).join('');
+    if (selectedName && names.indexOf(selectedName) !== -1) sel.value = selectedName;
+  }
+
+  function rememberLastPreset(name){
+    try { localStorage.setItem(LAST_PRESET_KEY, name || ''); } catch(e){ /* ignore */ }
+  }
+
+  function getLastPreset(){
+    try { return localStorage.getItem(LAST_PRESET_KEY) || ''; } catch(e){ return ''; }
+  }
+
+  // ---------- math helpers (mirrors the Google Sheet's Apps Script logic) ----------
+  function saneInt(v){ v = Number(v); if(!isFinite(v) || isNaN(v)) return 0; return Math.max(0, Math.round(v)); }
+  function pct(v){ v = Number(v); if(!isFinite(v)||isNaN(v)) return 0; return Math.max(0, v/100); }
+
+  function normalizeRatios(arr){
+    const vals = arr.map(pct);
+    const total = vals.reduce((a,b)=>a+b,0);
+    if (total <= 0) return [1/3,1/3,1/3];
+    return vals.map(v=>v/total);
+  }
+
+  function allocateTroops(capacity, availability, weights, fallbackWeights){
+    let cap = saneInt(capacity);
+    let remaining = availability.map(saneInt);
+    const maxCap = remaining.reduce((a,b)=>a+b,0);
+    cap = Math.min(cap, maxCap);
+    if (cap <= 0) return [0,0,0];
+
+    const alloc = [0,0,0];
+    let remainingCap = cap;
+
+    for (let step=0; step<12 && remainingCap>0.000001; step++){
+      const active = [0,1,2].filter(i=>remaining[i]>0.000001);
+      if (active.length===0) break;
+
+      let w = weights.map(v=>Math.max(0,v));
+      let wsum = active.reduce((s,i)=>s+w[i],0);
+      if (wsum<=0.000001){ w = fallbackWeights.map(v=>Math.max(0,v)); wsum = active.reduce((s,i)=>s+w[i],0); }
+      if (wsum<=0.000001){ w=[1,1,1]; wsum=active.length; }
+
+      const proposed = {};
+      active.forEach(i=> proposed[i] = remainingCap * w[i] / wsum);
+
+      let clamped=false;
+      active.forEach(i=>{
+        if (proposed[i] >= remaining[i]-0.000001){
+          alloc[i]+=remaining[i]; remainingCap-=remaining[i]; remaining[i]=0; clamped=true;
+        }
+      });
+
+      if (!clamped){
+        active.forEach(i=>{ alloc[i]+=proposed[i]; remaining[i]-=proposed[i]; });
+        remainingCap=0; break;
+      }
+    }
+
+    if (remainingCap>0.000001){
+      for (let i=0;i<3 && remainingCap>0.000001;i++){
+        const add = Math.min(remaining[i], remainingCap);
+        alloc[i]+=add; remaining[i]-=add; remainingCap-=add;
+      }
+    }
+
+    const floors = alloc.map(Math.floor);
+    let needed = Math.round(cap - floors.reduce((a,b)=>a+b,0));
+    const order = [0,1,2].sort((a,b)=>{
+      const fracDiff = (alloc[b]-Math.floor(alloc[b])) - (alloc[a]-Math.floor(alloc[a]));
+      if (Math.abs(fracDiff)>0.000001) return fracDiff;
+      return fallbackWeights[b]-fallbackWeights[a];
+    });
+
+    let guard=0;
+    while (needed>0 && guard<20){
+      for (const i of order){
+        if (needed<=0) break;
+        if (floors[i] < saneInt(availability[i])){ floors[i]+=1; needed-=1; }
+      }
+      guard++;
+    }
+    return floors;
+  }
+
+  function joinerTotals(totalCap, infAvail, cavAvail, archAvail, jInf, jCav, jArch, floorPctVal, activeJoiners){
+    const cap = saneInt(totalCap);
+    const avail = [saneInt(infAvail), saneInt(cavAvail), saneInt(archAvail)];
+    const totalAvail = avail.reduce((a,b)=>a+b,0);
+    const capacityToPlan = Math.min(cap, totalAvail);
+    if (capacityToPlan<=0) return [0,0,0];
+
+    const marchCount = Math.max(0, Math.min(6, saneInt(activeJoiners)));
+    const weights = normalizeRatios([jInf,jCav,jArch]);
+    let alloc = allocateTroops(capacityToPlan, avail, weights, weights);
+
+    const floorFromPct = Math.round(capacityToPlan * pct(floorPctVal));
+    let infFloor = 0;
+    if (avail[0]>0) infFloor = Math.min(avail[0], capacityToPlan, Math.max(marchCount, floorFromPct));
+
+    if (alloc[0] < infFloor){
+      let deficit = infFloor - alloc[0];
+      alloc[0] = infFloor;
+      for (const i of [2,1]){
+        if (deficit<=0) break;
+        const take = Math.min(alloc[i], deficit);
+        alloc[i]-=take; deficit-=take;
+      }
+    }
+    return [saneInt(alloc[0]), saneInt(alloc[1]), saneInt(alloc[2])];
+  }
+
+  function hostAllocate(cap, ratioTotal, iPctRaw, cPctRaw, aPctRaw, hostMinInfantry, infAvail, cavAvail, archAvail){
+    if (cap<=0) return [0,0,0];
+    const rt = Math.max(0.000001, ratioTotal);
+    const iPct = iPctRaw/rt, cPct = cPctRaw/rt, aPct = aPctRaw/rt;
+    const infTarget = Math.min(cap, Math.max(Math.min(hostMinInfantry, cap), Math.round(cap*iPct)));
+    const infBase = Math.min(infAvail, infTarget);
+    const archTarget = Math.min(Math.max(0, cap-infBase), Math.round(cap*aPct));
+    const archBase = Math.min(archAvail, archTarget);
+    const cavBase = Math.min(cavAvail, Math.max(0, cap-infBase-archBase));
+    const left1 = Math.max(0, cap-infBase-archBase-cavBase);
+    const extraArch = Math.min(Math.max(0, archAvail-archBase), left1);
+    const left2 = Math.max(0, left1-extraArch);
+    const extraCav = Math.min(Math.max(0, cavAvail-cavBase), left2);
+    const left3 = Math.max(0, left2-extraCav);
+    const extraInf = Math.min(Math.max(0, infAvail-infBase), left3);
+    return [infBase+extraInf, cavBase+extraCav, archBase+extraArch];
+  }
+
+  function fmt(n){ return Math.round(n).toLocaleString('en-US'); }
+
+  // ---------- main compute + render ----------
+  function compute(){
+    const s = readState();
+
+    // mutual exclusivity for city caps
+    // (handled in the checkbox listeners directly, but guard here too)
+    if (s.cap10 && s.cap20) { s.cap20 = false; el('cap20').checked = false; }
+
+    const flatBoost = (s.bisonOn?s.bisonAmt:0) + (s.marshalOn?s.marshalAmt:0);
+    const percentBoost = s.cap20?0.20 : (s.cap10?0.10:0);
+
+    const effectiveHostCapacity = (s.hostCapacity+s.valora+flatBoost>0)
+      ? Math.round((s.hostCapacity+s.valora+flatBoost)*(1+percentBoost)) : 0;
+
+    const boostedJoinerCapacity = s.joinerCapacity>0
+      ? (s.applyBoosts ? Math.round(s.joinerCapacity*(1+percentBoost))+flatBoost : s.joinerCapacity)
+      : 0;
+
+    const joinerCapAfterBaseLimit = s.joinerCapacity>0
+      ? Math.min(s.joinerCapacity, boostedJoinerCapacity) : boostedJoinerCapacity;
+
+    const noHeroCapAfterLimit = s.noHeroCapacity>0
+      ? Math.min(joinerCapAfterBaseLimit, s.applyBoosts ? Math.round(s.noHeroCapacity*(1+percentBoost))+flatBoost : s.noHeroCapacity)
+      : joinerCapAfterBaseLimit;
+
+    const hostRatioTotal = pct(s.hInf)+pct(s.hCav)+pct(s.hArch);
+    const joinerRatioTotal = pct(s.jInf)+pct(s.jCav)+pct(s.jArch);
+
+    el('hostRatioCheck').className = 'ratio-check ' + (Math.abs(hostRatioTotal-1)<0.0005 ? 'ok':'bad');
+    el('hostRatioCheck').textContent = 'Host ratio: ' + Math.round(hostRatioTotal*100) + '% ' + (Math.abs(hostRatioTotal-1)<0.0005 ? 'OK':'— should total 100%');
+    const jrOk = joinerRatioTotal===0 || Math.abs(joinerRatioTotal-1)<0.0005;
+    el('joinerRatioCheck').className = 'ratio-check ' + (jrOk?'ok':'bad');
+    el('joinerRatioCheck').textContent = 'Joiner ratio: ' + Math.round(joinerRatioTotal*100) + '% ' + (jrOk ? 'OK':'— should total 100% (or leave all 0 for auto-balance)');
+
+    el('troopsTotalHint').textContent = 'Troops Total: ' + fmt(s.infantry+s.cavalry+s.archers);
+
+    // Host row
+    const hostCap = s.useHostRally ? effectiveHostCapacity : 0;
+    const hostAlloc = hostAllocate(hostCap, hostRatioTotal, pct(s.hInf), pct(s.hCav), pct(s.hArch), s.hostMinInfantry, s.infantry, s.cavalry, s.archers);
+
+    let infRemaining = s.infantry - hostAlloc[0];
+    let cavRemaining = s.cavalry - hostAlloc[1];
+    let archRemaining = s.archers - hostAlloc[2];
+
+    // Joiner row capacities (rows 1-6)
+    const joinerCaps = [];
+    for (let idx=1; idx<=6; idx++){
+      if (idx > s.joiningMarches) { joinerCaps.push(0); continue; }
+      joinerCaps.push(idx>=5 ? noHeroCapAfterLimit : joinerCapAfterBaseLimit);
+    }
+    const totalJoinerCapacity = joinerCaps.reduce((a,b)=>a+b,0);
+
+    const plannedJoiner = joinerTotals(totalJoinerCapacity, infRemaining, cavRemaining, archRemaining, pct(s.jInf), pct(s.jCav), pct(s.jArch), pct(s.floorPct), s.joiningMarches);
+    const [plannedInf, plannedCav, plannedArch] = plannedJoiner;
+
+    // Distribute planned joiner totals across active joiner rows by capacity share
+    // (floor division), then hand any leftover from the uneven split to Joiner 1-4
+    // first. This keeps Joiner 5 and 6 identical to each other whenever they share
+    // the same capacity, instead of the rounding remainder landing wherever it falls.
+    const activeIdx = [];
+    for (let i=0;i<6;i++) if (joinerCaps[i]>0) activeIdx.push(i);
+
+    function distributeFloorShares(total){
+      const shares = new Array(6).fill(0);
+      if (total<=0 || totalJoinerCapacity<=0) return shares;
+      activeIdx.forEach(i=>{ shares[i] = Math.floor(total * joinerCaps[i] / totalJoinerCapacity); });
+      let remainder = Math.round(total) - shares.reduce((a,b)=>a+b,0);
+      const frontRows = activeIdx.filter(i=>i<4);
+      const backRows = activeIdx.filter(i=>i>=4);
+      let guard=0;
+      while (remainder>0 && frontRows.length && guard<100){
+        for (const i of frontRows){ if (remainder<=0) break; shares[i]+=1; remainder-=1; }
+        guard++;
+      }
+      guard=0;
+      while (remainder>0 && backRows.length && guard<100){
+        for (const i of backRows){ if (remainder<=0) break; shares[i]+=1; remainder-=1; }
+        guard++;
+      }
+      return shares;
+    }
+
+    const archShares = distributeFloorShares(plannedArch);
+    const cavSharesRaw = distributeFloorShares(plannedCav);
+    const cavShares = cavSharesRaw.map((v,i)=> Math.min(v, Math.max(0, joinerCaps[i]-archShares[i])));
+
+    const rows = [];
+    let infLeft = infRemaining, cavLeft = cavRemaining, archLeft = archRemaining;
+
+    for (let i=0;i<6;i++){
+      const cap = joinerCaps[i];
+
+      if (cap===0){
+        rows.push({name:'Joiner '+(i+1), cap:0, inf:0, cav:0, arch:0, status:'off'});
+        continue;
+      }
+
+      let arch = Math.min(archShares[i], archLeft);
+      let cav = Math.min(cavShares[i], cavLeft, Math.max(0, cap-arch));
+      let inf = Math.min(infLeft, Math.max(0, cap-arch-cav));
+
+      const totalSent = inf+cav+arch;
+      infLeft -= inf; cavLeft -= cav; archLeft -= arch;
+
+      let status = 'ok';
+      if (totalSent < cap) status = 'bad';
+      else if (i>=4 && noHeroCapAfterLimit < joinerCapAfterBaseLimit && cap===noHeroCapAfterLimit) status = 'warn';
+
+      rows.push({name:'Joiner '+(i+1), cap, inf, cav, arch, status});
+    }
+
+    // final remaining after all joiners
+    const finalInf = infLeft, finalCav = cavLeft, finalArch = archLeft;
+
+    renderResults({
+      hostCap, hostAlloc, s,
+      rows, effectiveHostCapacity, totalJoinerCapacity,
+      plannedInf, plannedCav, plannedArch,
+      finalInf, finalCav, finalArch
+    });
+
+    save();
+  }
+
+  function barSegment(part, whole, cls){
+    const width = whole>0 ? (100*part/whole) : 0;
+    return '<span class="'+cls+'" style="width:'+width.toFixed(2)+'%"></span>';
+  }
+
+  function marchRow(name, cap, inf, cav, arch, statusInfo){
+    const total = inf+cav+arch;
+    const bar = cap>0
+      ? `<div class="mini-bar">${barSegment(inf,cap,'b-inf')}${barSegment(cav,cap,'b-cav')}${barSegment(arch,cap,'b-arch')}</div>`
+      : '';
+    return `<tr class="row-${statusInfo.cls}">
+      <td class="name-cell">${name}${bar}</td>
+      <td class="num">${fmt(cap)}</td>
+      <td class="num col-inf">${fmt(inf)}</td>
+      <td class="num col-cav">${fmt(cav)}</td>
+      <td class="num col-arch">${fmt(arch)}</td>
+      <td class="num">${fmt(total)}</td>
+      <td><span class="pill ${statusInfo.cls}">${statusInfo.label}</span></td>
+    </tr>`;
+  }
+
+  function statusFor(kind, cap, total, extra){
+    if (kind==='host'){
+      if (!extra.useHostRally) return {cls:'off', label:'Host Off'};
+      if (cap===0) return {cls:'off', label:'Unused'};
+      if (extra.hostInf < Math.min(extra.hostMinInfantry, cap)) return {cls:'bad', label:'Need Host Infantry'};
+      if (total < cap) return {cls:'bad', label:'Not enough troops'};
+      return {cls:'ok', label:'OK'};
+    }
+    if (cap===0) return {cls:'off', label:'Unused'};
+    if (total < cap) return {cls:'bad', label:'Not enough troops'};
+    if (extra.noHeroCap) return {cls:'warn', label:'No-hero cap'};
+    return {cls:'ok', label:'OK'};
+  }
+
+  function renderResults(ctx){
+    const { hostCap, hostAlloc, s, rows, plannedInf, plannedCav, plannedArch, finalInf, finalCav, finalArch, effectiveHostCapacity, totalJoinerCapacity } = ctx;
+
+    const hostTotal = hostAlloc[0]+hostAlloc[1]+hostAlloc[2];
+    const hostStatus = statusFor('host', hostCap, hostTotal, { useHostRally:s.useHostRally, hostMinInfantry:s.hostMinInfantry, hostInf:hostAlloc[0] });
+
+    let html = marchRow('Host Rally', hostCap, hostAlloc[0], hostAlloc[1], hostAlloc[2], hostStatus);
+
+    rows.forEach((r,i)=>{
+      const st = r.status==='off' ? {cls:'off', label:'Unused'} : statusFor('joiner', r.cap, r.inf+r.cav+r.arch, { noHeroCap: r.status==='warn' });
+      html += marchRow(r.name, r.cap, r.inf, r.cav, r.arch, st);
+    });
+
+    el('marchTableBody').innerHTML = html;
+
+    const totalSentInf = hostAlloc[0]+rows.reduce((a,r)=>a+r.inf,0);
+    const totalSentCav = hostAlloc[1]+rows.reduce((a,r)=>a+r.cav,0);
+    const totalSentArch = hostAlloc[2]+rows.reduce((a,r)=>a+r.arch,0);
+    const totalSent = totalSentInf+totalSentCav+totalSentArch;
+
+    el('summaryGrid').innerHTML = `
+      <div class="item"><div class="n">${fmt(effectiveHostCapacity)}</div><div class="l">Effective Host Capacity</div></div>
+      <div class="item"><div class="n">${fmt(totalJoinerCapacity)}</div><div class="l">Total Joiner Capacity</div></div>
+      <div class="item"><div class="n">${fmt(totalSent)}</div><div class="l">Total Troops Deployed</div></div>
+      <div class="item"><div class="n">${fmt(finalInf)}</div><div class="l">Infantry Remaining</div></div>
+      <div class="item"><div class="n">${fmt(finalCav)}</div><div class="l">Cavalry Remaining</div></div>
+      <div class="item"><div class="n">${fmt(finalArch)}</div><div class="l">Archers Remaining</div></div>
+    `;
+  }
+
+  // ---------- events ----------
+  ids.forEach(id=>{
+    const node = el(id);
+    node.addEventListener('input', compute);
+    node.addEventListener('change', compute);
+  });
+
+  el('cap10').addEventListener('change', function(){ if (this.checked) el('cap20').checked=false; compute(); });
+  el('cap20').addEventListener('change', function(){ if (this.checked) el('cap10').checked=false; compute(); });
+
+  el('resetBtn').addEventListener('click', function(){
+    if (!confirm('Clear all fields and saved data on this device?')) return;
+    localStorage.removeItem(STORAGE_KEY);
+    location.reload();
+  });
+
+  el('exportJpgBtn').addEventListener('click', function(){
+    if (typeof html2canvas === 'undefined'){
+      alert('The image export library did not load (no internet connection?). Try again once you are online.');
+      return;
+    }
+    const target = el('marchesCapture');
+    const btn = el('exportJpgBtn');
+    const originalLabel = btn.textContent;
+    btn.textContent = 'Rendering…';
+    btn.disabled = true;
+
+    html2canvas(target, {
+      backgroundColor: '#242c3d',
+      scale: 2,
+      useCORS: true
+    }).then(function(canvas){
+      const url = canvas.toDataURL('image/jpeg', 0.95);
+      const a = document.createElement('a');
+      const stamp = new Date().toISOString().slice(0,10);
+      a.href = url; a.download = 'recommended-marches-'+stamp+'.jpg';
+      document.body.appendChild(a); a.click(); a.remove();
+    }).catch(function(){
+      alert('Could not generate the image. Try again, or take a screenshot instead.');
+    }).finally(function(){
+      btn.textContent = originalLabel;
+      btn.disabled = false;
+    });
+  });
+
+  el('presetSelect').addEventListener('change', function(){
+    const name = this.value;
+    rememberLastPreset(name);
+    if (!name) return;
+    const presets = loadPresets();
+    if (presets[name]){
+      writeState(presets[name]);
+      compute();
+    }
+  });
+
+  el('presetSaveBtn').addEventListener('click', function(){
+    const input = prompt('Name this preset (e.g. a player\'s in-game name):', el('presetSelect').value || '');
+    if (input === null) return;
+    const name = input.trim();
+    if (!name) return;
+    const presets = loadPresets();
+    if (presets[name] && !confirm(`"${name}" already exists. Overwrite it?`)) return;
+    presets[name] = readState();
+    savePresets(presets);
+    refreshPresetSelect(name);
+    el('presetSelect').value = name;
+    rememberLastPreset(name);
+  });
+
+  el('presetUpdateBtn').addEventListener('click', function(){
+    const name = el('presetSelect').value;
+    if (!name){ alert('Select a saved preset first, or use "Save As New" to create one.'); return; }
+    const presets = loadPresets();
+    presets[name] = readState();
+    savePresets(presets);
+    alert(`"${name}" updated with the current fields.`);
+  });
+
+  el('presetDeleteBtn').addEventListener('click', function(){
+    const name = el('presetSelect').value;
+    if (!name){ alert('Select a saved preset to delete.'); return; }
+    if (!confirm(`Delete preset "${name}"? This cannot be undone.`)) return;
+    const presets = loadPresets();
+    delete presets[name];
+    savePresets(presets);
+    rememberLastPreset('');
+    refreshPresetSelect('');
+  });
+
+  el('presetDeleteAllBtn').addEventListener('click', function(){
+    const presets = loadPresets();
+    const count = Object.keys(presets).length;
+    if (count === 0){ alert('There are no presets to delete.'); return; }
+    if (!confirm(`Delete all ${count} saved preset(s)? This cannot be undone.`)) return;
+    savePresets({});
+    rememberLastPreset('');
+    refreshPresetSelect('');
+  });
+
+  function openExportPresetModal(){
+    const presets = loadPresets();
+    const names = Object.keys(presets).sort((a,b)=>a.localeCompare(b));
+    if (names.length === 0){ alert('No presets saved yet — use "Save As New" first.'); return; }
+
+    const list = el('exportPresetChecklist');
+    list.innerHTML = names.map(n => `
+      <label class="modal-check-row">
+        <input type="checkbox" class="export-preset-check" value="${escapeHtml(n)}" checked>
+        <span>${escapeHtml(n)}</span>
+      </label>
+    `).join('');
+    el('exportModalOverlay').style.display = 'flex';
+  }
+
+  function closeExportPresetModal(){
+    el('exportModalOverlay').style.display = 'none';
+  }
+
+  el('presetExportBtn').addEventListener('click', openExportPresetModal);
+  el('cancelExportPresetsBtn').addEventListener('click', closeExportPresetModal);
+  el('exportModalOverlay').addEventListener('click', function(e){
+    if (e.target === this) closeExportPresetModal();
+  });
+
+  el('selectAllPresetsBtn').addEventListener('click', function(){
+    document.querySelectorAll('.export-preset-check').forEach(cb => cb.checked = true);
+  });
+  el('selectNonePresetsBtn').addEventListener('click', function(){
+    document.querySelectorAll('.export-preset-check').forEach(cb => cb.checked = false);
+  });
+
+  el('confirmExportPresetsBtn').addEventListener('click', function(){
+    const checks = Array.from(document.querySelectorAll('.export-preset-check'));
+    const selected = checks.filter(cb => cb.checked).map(cb => cb.value);
+    if (selected.length === 0){ alert('Select at least one preset to export.'); return; }
+
+    const presets = loadPresets();
+    const chosen = {};
+    selected.forEach(name => { if (presets.hasOwnProperty(name)) chosen[name] = presets[name]; });
+
+    const blob = new Blob([JSON.stringify(chosen, null, 2)], {type:'application/json'});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    const stamp = new Date().toISOString().slice(0,10);
+    a.href = url; a.download = 'bear-hunt-presets-'+stamp+'.json';
+    document.body.appendChild(a); a.click(); a.remove();
+    URL.revokeObjectURL(url);
+    closeExportPresetModal();
+  });
+
+  el('presetImportBtn').addEventListener('click', function(){ el('presetImportFile').click(); });
+  el('presetImportFile').addEventListener('change', function(e){
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = function(){
+      let incoming;
+      try {
+        incoming = JSON.parse(reader.result);
+      } catch(err){
+        alert('That file could not be read as a valid presets export.');
+        e.target.value = '';
+        return;
+      }
+      if (typeof incoming !== 'object' || incoming === null || Array.isArray(incoming)){
+        alert('That file does not look like a presets export.');
+        e.target.value = '';
+        return;
+      }
+
+      const existing = loadPresets();
+      const incomingNames = Object.keys(incoming);
+      const conflicts = incomingNames.filter(n => existing.hasOwnProperty(n));
+      let overwrite = true;
+      if (conflicts.length > 0){
+        overwrite = confirm(
+          conflicts.length + ' preset(s) already exist with the same name(s): ' + conflicts.join(', ') +
+          '.\n\nOverwrite them with the imported versions? Choose Cancel to keep your existing ones and only add the new names.'
+        );
+      }
+
+      incomingNames.forEach(name => {
+        if (existing.hasOwnProperty(name) && !overwrite) return;
+        existing[name] = incoming[name];
+      });
+
+      savePresets(existing);
+      refreshPresetSelect(getLastPreset());
+      alert('Presets imported: ' + incomingNames.length + ' loaded.');
+      e.target.value = '';
+    };
+    reader.readAsText(file);
+  });
+
+  // ---------- init ----------
+  load();
+  refreshPresetSelect(getLastPreset());
+  compute();
+})();
+</script>
+</body>
+</html>
