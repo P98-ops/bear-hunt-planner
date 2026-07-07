@@ -94,17 +94,43 @@
   .grid{display:grid;grid-template-columns: 380px 1fr;gap:22px;align-items:start;}
   @media (max-width: 900px){ .grid{grid-template-columns: 1fr;} }
 
+  @media (max-width: 720px){
+    .wrap{padding:20px 14px 60px;}
+    header.masthead{
+      flex-direction:column;align-items:center;text-align:center;
+      gap:12px;padding-bottom:16px;margin-bottom:20px;
+    }
+    .masthead-meta{text-align:center;max-width:100%;}
+    .privacy-pill{margin-left:auto;margin-right:auto;}
+    .plan-header{justify-content:center;text-align:center;}
+    .plan-header h2{justify-content:center;text-align:center;width:100%;}
+    .actions{justify-content:center;}
+    .legend{justify-content:center;text-align:center;}
+    .summary-grid{grid-template-columns:repeat(2,1fr);}
+  }
+
   @media (max-width: 600px){
     body{ font-size:17px; }
-    .check{ padding:11px 0; gap:10px; font-size:15px; }
-    .check input{ width:22px; height:22px; }
+    h1.brand{ font-size:clamp(28px,9vw,40px); }
+    .card{ padding:16px 14px 18px; }
+    .check{ padding:12px 0; gap:12px; font-size:15px; }
+    .check input{ width:24px; height:24px; }
     input[type=number], input[type=text], select{
-      font-size:16px; padding:12px 12px; /* 16px avoids iOS auto-zoom on focus */
+      font-size:16px; padding:13px 12px; /* 16px avoids iOS auto-zoom on focus */
     }
     .field label{ font-size:13.5px; }
     .swatch-label{ font-size:13.5px; }
-    button.btn, a.btn{ padding:11px 18px; font-size:14px; }
+    button.btn, a.btn{ padding:12px 18px; font-size:14.5px; width:100%; }
+    .actions{ flex-direction:column; }
+    .actions button.btn, .actions a.btn{ width:100%; }
     .row3, .row2{ gap:8px; }
+    .summary-grid{grid-template-columns:repeat(2,1fr);}
+    table.marches-table td.name-cell{ font-size:14px; }
+  }
+
+  @media (max-width: 380px){
+    .row3{grid-template-columns:1fr;}
+    .summary-grid{grid-template-columns:1fr;}
   }
 
   .card{
@@ -114,9 +140,9 @@
   .card h2{
     font-family:'Big Shoulders Display', sans-serif;font-weight:700;font-size:20px;
     letter-spacing:.03em;text-transform:uppercase;margin:0 0 14px;color:var(--gold-soft);
-    display:flex;align-items:center;gap:8px;
+    display:flex;align-items:center;gap:10px;justify-content:center;text-align:center;
   }
-  .card h2 .rule{flex:1;height:1px;background:var(--line);}
+  .card h2::before, .card h2::after{content:"";flex:1;height:1px;background:var(--line);}
 
   .field{margin-bottom:12px;}
   .field label{display:block;font-size:12.5px;color:var(--ink-muted);margin-bottom:5px;}
@@ -131,8 +157,8 @@
   }
   .row3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;}
   .row2{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;}
-  .check{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--ink);padding:8px 0;}
-  .check input{width:16px;height:16px;accent-color:var(--gold);}
+  .check{display:flex;align-items:center;gap:9px;font-size:13.5px;color:var(--ink);padding:9px 0;cursor:pointer;}
+  .check input{width:18px;height:18px;accent-color:var(--gold);cursor:pointer;flex:none;}
   .subgroup{border-top:1px dashed var(--line);margin-top:14px;padding-top:14px;}
   .swatch-label{display:flex;align-items:center;gap:6px;}
   .swatch{width:9px;height:9px;border-radius:2px;flex:none;}
@@ -144,6 +170,8 @@
 
   /* ---------- Results ---------- */
   .plan-header{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:12px;flex-wrap:wrap;gap:8px;}
+  .plan-header h2{justify-content:flex-start;text-align:left;}
+  .plan-header h2::before, .plan-header h2::after{display:none;}
   .totals-strip{display:flex;gap:14px;flex-wrap:wrap;font-family:'JetBrains Mono',monospace;font-size:12.5px;color:var(--ink-muted);}
   .totals-strip b{color:var(--ink);font-weight:600;}
 
@@ -215,7 +243,7 @@
   a.btn.frakinator-link:hover{background:#3384ea;border-color:#3384ea;}
   #presetImportFile{display:none;}
 
-  footer{margin-top:30px;text-align:center;color:var(--ink-faint);font-size:12px;}
+  footer{margin-top:30px;text-align:center;color:var(--ink-faint);font-size:12px;line-height:1.6;padding:0 10px;}
   footer a{color:var(--gold-soft);}
 
   /* ---------- Export presets modal ---------- */
@@ -265,7 +293,9 @@
       <h3>Getting your numbers</h3>
       <ul>
         <li><b>Frakinator ratio</b> — open the <a href="https://frakinator.streamlit.app/" target="_blank" rel="noopener">Frakinator tool</a> with your hero screenshots to get your optimal Host Infantry/Cavalry/Archers split, then enter it under "Host Ratio".</li>
-        <li><b>Joiner ratio</b> defaults to 10% / 10% / 80% — a safe split that keeps some Infantry and Cavalry in every Joiner march instead of sending 100% of one troop type. Adjust it if you like.</li>
+        <li><b>Joiner ratio</b> defaults to 1% / 10% / 89% (Infantry/Cavalry/Archers) — the current community-verified Bear Hunt standard for Gen 4+ accounts, favoring Archers heavily while keeping just enough Infantry and Cavalry active to trigger their hero buff skills. Adjust it if your own stats say otherwise.</li>
+        <li>Keep at least <b>~5,000 Infantry</b> in absolute numbers once your march is large enough for that to matter — dropping below it can lose the Infantry hero-skill bonus even if the percentage looks fine. Use the Infantry floor field for this rather than the percentage.</li>
+        <li><b>Per-Joiner Troop Floors</b> let you guarantee an absolute minimum troop count per march for any type, on top of the ratio — useful since the same percentage can round very differently depending on a player's troop totals. Leave at 0 to rely purely on the ratio.</li>
       </ul>
       <h3>Key options</h3>
       <ul>
@@ -285,7 +315,7 @@
     <!-- LEFT: INPUTS -->
     <div>
       <div class="card" id="presetsCard">
-        <h2>Player Presets <span class="rule"></span></h2>
+        <h2>Player Presets</h2>
         <div class="field">
           <label>Load a saved preset</label>
           <select id="presetSelect"><option value="">— Current / Unsaved —</option></select>
@@ -305,7 +335,7 @@
       </div>
 
       <div class="card">
-        <h2>Troop Totals <span class="rule"></span></h2>
+        <h2>Troop Totals</h2>
         <div class="field"><label class="swatch-label"><span class="swatch inf"></span>Infantry Total</label><input type="number" min="0" id="infantry" value="0"></div>
         <div class="field"><label class="swatch-label"><span class="swatch cav"></span>Cavalry Total</label><input type="number" min="0" id="cavalry" value="0"></div>
         <div class="field"><label class="swatch-label"><span class="swatch arch"></span>Archers Total</label><input type="number" min="0" id="archers" value="0"></div>
@@ -313,10 +343,24 @@
       </div>
 
       <div class="card">
-        <h2>March Capacities <span class="rule"></span></h2>
+        <h2>March Capacities</h2>
         <div class="check"><input type="checkbox" id="useHostRally" checked><label for="useHostRally">Use Host Rally?</label></div>
         <div class="field"><label>Host March Capacity</label><input type="number" min="0" id="hostCapacity" value="0"></div>
-        <div class="field"><label>Master VALORA (flat host bonus)</label><input type="number" min="0" id="valora" value="0"></div>
+        <div class="field"><label>Master VALORA (Savage Advantage - flat host bonus)</label>
+          <select id="valora">
+            <option value="0">None</option>
+            <option value="3000">Lv. 1 (3,000)</option>
+            <option value="6000">Lv. 2 (6,000)</option>
+            <option value="9000">Lv. 3 (9,000)</option>
+            <option value="12000">Lv. 4 (12,000)</option>
+            <option value="15000">Lv. 5 (15,000)</option>
+            <option value="18000">Lv. 6 (18,000)</option>
+            <option value="21000">Lv. 7 (21,000)</option>
+            <option value="24000">Lv. 8 (24,000)</option>
+            <option value="27000">Lv. 9 (27,000)</option>
+            <option value="30000">Lv. 10 (30,000)</option>
+          </select>
+        </div>
         <div class="field"><label>Host Minimum Infantry <span class="hint">(applies to Host Rally only)</span></label><input type="number" min="0" id="hostMinInfantry" value="5000"></div>
         <div class="subgroup">
           <div class="field"><label>Joiner Capacity Limit</label><input type="number" min="0" id="joinerCapacity" value="100000"></div>
@@ -327,7 +371,7 @@
       </div>
 
       <div class="card">
-        <h2>Ratios <span class="rule"></span></h2>
+        <h2>Ratios</h2>
         <a href="https://frakinator.streamlit.app/" target="_blank" rel="noopener" class="btn frakinator-link">Open Frakinator ↗</a>
         <label style="font-size:12.5px;color:var(--ink-muted);display:block;margin-top:12px;">Host Ratio (from Frakinator)</label>
         <div class="row3" style="margin-top:6px;">
@@ -338,22 +382,40 @@
         <div id="hostRatioCheck" class="ratio-check ok">Host ratio: 100% OK</div>
 
         <div class="subgroup">
-          <label style="font-size:12.5px;color:var(--ink-muted);">Joiner Ratio <span class="hint">(your own split, independent of Host)</span></label>
+          <label style="font-size:12.5px;color:var(--ink-muted);">Joiner Ratio <span class="hint">(optional - set this to use percentages instead of Floors. Leave all three at 0 to use Floors below, which is simpler if you don't want to think about percentages.)</span></label>
           <div class="row3" style="margin-top:6px;">
-            <div><label class="hint swatch-label"><span class="swatch inf"></span>Inf %</label><input type="number" min="0" max="100" id="jInf" value="10"></div>
-            <div><label class="hint swatch-label"><span class="swatch cav"></span>Cav %</label><input type="number" min="0" max="100" id="jCav" value="10"></div>
-            <div><label class="hint swatch-label"><span class="swatch arch"></span>Arch %</label><input type="number" min="0" max="100" id="jArch" value="80"></div>
+            <div><label class="hint swatch-label"><span class="swatch inf"></span>Inf %</label><input type="number" min="0" max="100" id="jInf" value="0"></div>
+            <div><label class="hint swatch-label"><span class="swatch cav"></span>Cav %</label><input type="number" min="0" max="100" id="jCav" value="0"></div>
+            <div><label class="hint swatch-label"><span class="swatch arch"></span>Arch %</label><input type="number" min="0" max="100" id="jArch" value="0"></div>
           </div>
           <div id="joinerRatioCheck" class="ratio-check ok">Joiner ratio: 100% OK</div>
-          <div class="field" style="margin-top:10px;"><label>Optional Joiner Infantry Floor % <span class="hint">(minimum guarantee per Joiner)</span></label><input type="number" min="0" max="100" id="floorPct" value="0"></div>
+
+          <label style="font-size:12.5px;color:var(--ink-muted);display:block;margin-top:14px;">Per-Joiner Troop Floors <span class="hint">(used automatically whenever the Ratio above is left at 0. Inf floor is an EXACT amount per march; Cavalry and Archers fill the rest, favoring Archers - the research-backed 1/10/89-style default. Cav/Arch floors are still a minimum on top of that. Community-tested Bear Hunt guides recommend keeping at least 5,000 Infantry in absolute numbers, which is why Inf floor defaults to 5,000. If you set a Ratio above instead, these Floors are ignored entirely.)</span></label>
+          <div class="row3" style="margin-top:6px;">
+            <div><label class="hint swatch-label"><span class="swatch inf"></span>Inf floor (exact)</label><input type="number" min="0" id="jInfFloor" value="5000"></div>
+            <div><label class="hint swatch-label"><span class="swatch cav"></span>Cav floor (min)</label><input type="number" min="0" id="jCavFloor" value="0"></div>
+            <div><label class="hint swatch-label"><span class="swatch arch"></span>Arch floor (min)</label><input type="number" min="0" id="jArchFloor" value="0"></div>
+          </div>
+          <div id="infantryFloorNotice" class="ratio-check bad" style="display:none;margin-top:8px;"></div>
         </div>
       </div>
 
       <div class="card">
-        <h2>Capacity Boosts <span class="rule"></span></h2>
+        <h2>Capacity Boosts</h2>
         <div class="row2">
           <div class="check"><input type="checkbox" id="bisonOn"><label for="bisonOn">Pet Bison</label></div>
-          <input type="number" min="0" id="bisonAmt" value="6000">
+          <select id="bisonAmt">
+            <option value="1500">Lv. 1 (1,500)</option>
+            <option value="3000">Lv. 2 (3,000)</option>
+            <option value="4500">Lv. 3 (4,500)</option>
+            <option value="6000">Lv. 4 (6,000)</option>
+            <option value="7500">Lv. 5 (7,500)</option>
+            <option value="9000">Lv. 6 (9,000)</option>
+            <option value="10500">Lv. 7 (10,500)</option>
+            <option value="12000">Lv. 8 (12,000)</option>
+            <option value="13500">Lv. 9 (13,500)</option>
+            <option value="15000">Lv. 10 (15,000)</option>
+          </select>
         </div>
         <div class="row2" style="margin-top:8px;">
           <div class="check"><input type="checkbox" id="marshalOn"><label for="marshalOn">Marshal</label></div>
@@ -370,7 +432,7 @@
       </div>
 
       <div class="card">
-        <h2>Your Data <span class="rule"></span></h2>
+        <h2>Your Data</h2>
         <div class="actions">
           <button class="btn danger-outline" id="resetBtn">Reset All</button>
         </div>
@@ -381,7 +443,7 @@
     <!-- RIGHT: RESULTS -->
     <div>
       <div class="card summary-card">
-        <h2>Deployment Summary <span class="rule"></span></h2>
+        <h2>Deployment Summary</h2>
         <div class="summary-grid" id="summaryGrid"></div>
       </div>
 
@@ -442,7 +504,7 @@
 
   const ids = ['infantry','cavalry','archers','useHostRally','hostCapacity','valora','hostMinInfantry',
     'joinerCapacity','noHeroCapacity','joiningMarches','applyBoosts',
-    'hInf','hCav','hArch','jInf','jCav','jArch','floorPct',
+    'hInf','hCav','hArch','jInf','jCav','jArch','jInfFloor','jCavFloor','jArchFloor',
     'bisonOn','bisonAmt','marshalOn','marshalAmt','cap10','cap20'];
 
   const STORAGE_KEY = 'bearHuntWarRoom.v1';
@@ -529,10 +591,18 @@
   function saneInt(v){ v = Number(v); if(!isFinite(v) || isNaN(v)) return 0; return Math.max(0, Math.round(v)); }
   function pct(v){ v = Number(v); if(!isFinite(v)||isNaN(v)) return 0; return Math.max(0, v/100); }
 
+  // Community-verified Bear Hunt default (Inf/Cav/Arch) for Gen 4+ accounts as of 2026 -
+  // 1% Infantry / 10% Cavalry / 89% Archers. Used any time a ratio is left entirely
+  // blank, instead of an even three-way split, which multiple guides flag as actively
+  // wasting each troop type's strengths. This is a solid general default; your actual
+  // personalized optimum (via Frakinator) can still beat it depending on your specific
+  // hero and stat setup.
+  const DEFAULT_BEAR_HUNT_WEIGHTS = [0.01, 0.10, 0.89];
+
   function normalizeRatios(arr){
     const vals = arr.map(pct);
     const total = vals.reduce((a,b)=>a+b,0);
-    if (total <= 0) return [1/3,1/3,1/3];
+    if (total <= 0) return DEFAULT_BEAR_HUNT_WEIGHTS.slice();
     return vals.map(v=>v/total);
   }
 
@@ -553,7 +623,7 @@
       let w = weights.map(v=>Math.max(0,v));
       let wsum = active.reduce((s,i)=>s+w[i],0);
       if (wsum<=0.000001){ w = fallbackWeights.map(v=>Math.max(0,v)); wsum = active.reduce((s,i)=>s+w[i],0); }
-      if (wsum<=0.000001){ w=[1,1,1]; wsum=active.length; }
+      if (wsum<=0.000001){ w=DEFAULT_BEAR_HUNT_WEIGHTS.slice(); wsum=active.reduce((s,i)=>s+w[i],0); }
 
       const proposed = {};
       active.forEach(i=> proposed[i] = remainingCap * w[i] / wsum);
@@ -597,37 +667,66 @@
     return floors;
   }
 
-  function joinerTotals(totalCap, infAvail, cavAvail, archAvail, jInf, jCav, jArch, floorPctVal, activeJoiners){
-    const cap = saneInt(totalCap);
+  // Plans the TOTAL Infantry/Cavalry/Archers to send across all active joiner
+  // marches combined. Infantry's floor is an EXACT target, not a growable minimum:
+  // it's reserved first at exactly that amount (capped only by actual Infantry
+  // availability), then Cavalry and Archers split whatever capacity is left,
+  // favoring Archers. If Cavalry+Archers can't cover the rest of the capacity on
+  // their own, Infantry grows only as much as strictly necessary to fill the march
+  // (flagged as infantryOverflow). If there isn't even enough Infantry available to
+  // reach the floor in the first place, that's flagged as infFloorUnmet - in both
+  // cases the least Infantry possible is used given the real constraint. Cavalry
+  // and Archers floors remain true minimums (can still grow via the ratio).
+  function planJoinerTotals(totalJoinerCap, infAvail, cavAvail, archAvail, weights, activeJoinerCount, infFloorPerJoiner, cavFloorPerJoiner, archFloorPerJoiner){
+    const cap = saneInt(totalJoinerCap);
     const avail = [saneInt(infAvail), saneInt(cavAvail), saneInt(archAvail)];
     const totalAvail = avail.reduce((a,b)=>a+b,0);
     const capacityToPlan = Math.min(cap, totalAvail);
-    if (capacityToPlan<=0) return [0,0,0];
+    if (capacityToPlan<=0) return { inf:0, cav:0, arch:0, infFloorUnmet:false, infantryOverflow:false };
 
-    const marchCount = Math.max(0, Math.min(6, saneInt(activeJoiners)));
-    const weights = normalizeRatios([jInf,jCav,jArch]);
-    let alloc = allocateTroops(capacityToPlan, avail, weights, weights);
+    const count = Math.max(0, saneInt(activeJoinerCount));
 
-    const floorFromPct = Math.round(capacityToPlan * pct(floorPctVal));
-    let infFloor = 0;
-    if (avail[0]>0) infFloor = Math.min(avail[0], capacityToPlan, Math.max(marchCount, floorFromPct));
+    const infFloorWanted = Math.min(saneInt(infFloorPerJoiner)*count, capacityToPlan);
+    const infFloorUnmet = infFloorWanted > avail[0];
+    let infantryExact = Math.min(infFloorWanted, avail[0]);
 
-    if (alloc[0] < infFloor){
-      let deficit = infFloor - alloc[0];
-      alloc[0] = infFloor;
-      for (const i of [2,1]){
-        if (deficit<=0) break;
-        const take = Math.min(alloc[i], deficit);
-        alloc[i]-=take; deficit-=take;
-      }
+    let capAfterInf = capacityToPlan - infantryExact;
+    const cavArchAvailTotal = avail[1] + avail[2];
+    let infantryOverflow = false;
+    if (cavArchAvailTotal < capAfterInf){
+      const need = Math.min(capAfterInf - cavArchAvailTotal, avail[0]-infantryExact);
+      if (need > 0){ infantryExact += need; infantryOverflow = true; }
+      capAfterInf = capacityToPlan - infantryExact;
     }
-    return [saneInt(alloc[0]), saneInt(alloc[1]), saneInt(alloc[2])];
+
+    const archFloor = Math.min(saneInt(archFloorPerJoiner)*count, avail[2], capAfterInf);
+    const capAfterArch = capAfterInf - archFloor;
+    const cavFloor = Math.min(saneInt(cavFloorPerJoiner)*count, avail[1], capAfterArch);
+    const capAfterCav = capAfterArch - cavFloor;
+
+    const remainingAvail = [0, Math.max(0, avail[1]-cavFloor), Math.max(0, avail[2]-archFloor)];
+    const extra = allocateTroops(capAfterCav, remainingAvail, weights, weights);
+
+    return {
+      inf: saneInt(infantryExact),
+      cav: saneInt(cavFloor+extra[1]),
+      arch: saneInt(archFloor+extra[2]),
+      infFloorUnmet,
+      infantryOverflow
+    };
   }
 
   function hostAllocate(cap, ratioTotal, iPctRaw, cPctRaw, aPctRaw, hostMinInfantry, infAvail, cavAvail, archAvail){
     if (cap<=0) return [0,0,0];
-    const rt = Math.max(0.000001, ratioTotal);
-    const iPct = iPctRaw/rt, cPct = cPctRaw/rt, aPct = aPctRaw/rt;
+    let iPct, cPct, aPct;
+    if (ratioTotal<=0){
+      // Host ratio left entirely blank - without this, dividing by a near-zero total
+      // would send everything to Cavalry by default, which is worse than an even
+      // split. Fall back to the same research-backed Archer-favored default instead.
+      [iPct, cPct, aPct] = DEFAULT_BEAR_HUNT_WEIGHTS;
+    } else {
+      iPct = iPctRaw/ratioTotal; cPct = cPctRaw/ratioTotal; aPct = aPctRaw/ratioTotal;
+    }
     const infTarget = Math.min(cap, Math.max(Math.min(hostMinInfantry, cap), Math.round(cap*iPct)));
     const infBase = Math.min(infAvail, infTarget);
     const archTarget = Math.min(Math.max(0, cap-infBase), Math.round(cap*aPct));
@@ -672,11 +771,16 @@
     const hostRatioTotal = pct(s.hInf)+pct(s.hCav)+pct(s.hArch);
     const joinerRatioTotal = pct(s.jInf)+pct(s.jCav)+pct(s.jArch);
 
-    el('hostRatioCheck').className = 'ratio-check ' + (Math.abs(hostRatioTotal-1)<0.0005 ? 'ok':'bad');
-    el('hostRatioCheck').textContent = 'Host ratio: ' + Math.round(hostRatioTotal*100) + '% ' + (Math.abs(hostRatioTotal-1)<0.0005 ? 'OK':'— should total 100%');
+    const hrOk = hostRatioTotal===0 || Math.abs(hostRatioTotal-1)<0.0005;
+    el('hostRatioCheck').className = 'ratio-check ' + (hrOk?'ok':'bad');
+    el('hostRatioCheck').textContent = hostRatioTotal===0
+      ? 'Host ratio: 0% — using default 1/10/89 until you enter your Frakinator numbers'
+      : 'Host ratio: ' + Math.round(hostRatioTotal*100) + '% ' + (hrOk ? 'OK':'— should total 100%');
     const jrOk = joinerRatioTotal===0 || Math.abs(joinerRatioTotal-1)<0.0005;
     el('joinerRatioCheck').className = 'ratio-check ' + (jrOk?'ok':'bad');
-    el('joinerRatioCheck').textContent = 'Joiner ratio: ' + Math.round(joinerRatioTotal*100) + '% ' + (jrOk ? 'OK':'— should total 100% (or leave all 0 for auto-balance)');
+    el('joinerRatioCheck').textContent = joinerRatioTotal===0
+      ? 'Joiner ratio: 0% — using your Floors instead (Infantry exact, Archers favored automatically)'
+      : 'Joiner ratio: ' + Math.round(joinerRatioTotal*100) + '% ' + (jrOk ? 'OK - governs the split, Floors ignored':'— should total 100%');
 
     el('troopsTotalHint').textContent = 'Troops Total: ' + fmt(s.infantry+s.cavalry+s.archers);
 
@@ -696,8 +800,47 @@
     }
     const totalJoinerCapacity = joinerCaps.reduce((a,b)=>a+b,0);
 
-    const plannedJoiner = joinerTotals(totalJoinerCapacity, infRemaining, cavRemaining, archRemaining, pct(s.jInf), pct(s.jCav), pct(s.jArch), pct(s.floorPct), s.joiningMarches);
-    const [plannedInf, plannedCav, plannedArch] = plannedJoiner;
+    // Two clean modes, so you never have to think about how Ratio and Floors
+    // interact: if you set a Joiner Ratio (any of the three percentages), it
+    // governs the whole split and Floors are ignored entirely. If you leave the
+    // Ratio blank, Floors take over instead - Infantry floor becomes an exact
+    // amount, Cavalry/Archers fill the rest favoring Archers (the research-backed
+    // 1/10/89-style default), all automatically.
+    const joinerRatioIsSet = (pct(s.jInf)+pct(s.jCav)+pct(s.jArch)) > 0;
+    const joinerWeights = joinerRatioIsSet
+      ? normalizeRatios([pct(s.jInf), pct(s.jCav), pct(s.jArch)])
+      : DEFAULT_BEAR_HUNT_WEIGHTS;
+    const activeJoinerCount = joinerCaps.filter(c => c>0).length;
+
+    let plannedInf, plannedCav, plannedArch;
+    const notice = el('infantryFloorNotice');
+
+    if (joinerRatioIsSet){
+      // Ratio mode: pure proportional split, Floors are not applied at all.
+      const alloc = allocateTroops(totalJoinerCapacity, [infRemaining, cavRemaining, archRemaining], joinerWeights, joinerWeights);
+      plannedInf = alloc[0]; plannedCav = alloc[1]; plannedArch = alloc[2];
+      notice.style.display = 'none';
+    } else {
+      // Floor mode: Infantry floor is exact, Cavalry/Archers floors are minimums,
+      // the rest fills automatically favoring Archers.
+      const joinerPlan = planJoinerTotals(
+        totalJoinerCapacity, infRemaining, cavRemaining, archRemaining, joinerWeights,
+        activeJoinerCount, s.jInfFloor, s.jCavFloor, s.jArchFloor
+      );
+      plannedInf = joinerPlan.inf; plannedCav = joinerPlan.cav; plannedArch = joinerPlan.arch;
+
+      if (joinerPlan.infFloorUnmet){
+        notice.style.display = 'block';
+        notice.className = 'ratio-check bad';
+        notice.textContent = '⚠ Not enough Infantry available to reach your floor - sending the maximum available instead.';
+      } else if (joinerPlan.infantryOverflow){
+        notice.style.display = 'block';
+        notice.className = 'ratio-check bad';
+        notice.textContent = '⚠ Not enough Cavalry + Archers to fill march capacity - Infantry increased beyond your floor to fill the gap.';
+      } else {
+        notice.style.display = 'none';
+      }
+    }
 
     // Distribute planned joiner totals across active joiner rows by capacity share
     // (floor division), then hand any leftover from the uneven split to Joiner 1-4
@@ -743,6 +886,10 @@
 
       let arch = Math.min(archShares[i], archLeft);
       let cav = Math.min(cavShares[i], cavLeft, Math.max(0, cap-arch));
+      // Infantry fills whatever's left in the row. Since Archers/Cavalry above
+      // already correctly reserve room for Infantry's exact target (via
+      // planJoinerTotals), this lands within a rounding unit of that target while
+      // always guaranteeing the row reaches full capacity.
       let inf = Math.min(infLeft, Math.max(0, cap-arch-cav));
 
       const totalSent = inf+cav+arch;
@@ -836,6 +983,23 @@
   // ---------- events ----------
   ids.forEach(id=>{
     const node = el(id);
+    // For number fields, visually clamp out a negative value the moment it's typed
+    // or pasted - the calculations already treat negatives as 0, but the field
+    // itself should never show one either, so nothing ever looks "wrong" even
+    // though the math was already safe.
+    if (node.type === 'number'){
+      node.addEventListener('input', function(){
+        if (this.value !== '' && Number(this.value) < 0) this.value = 0;
+      });
+      // Clicking into a field showing 0 clears it, so you can just start typing
+      // instead of deleting the 0 first. Leaving a field empty puts the 0 back.
+      node.addEventListener('focus', function(){
+        if (this.value === '0') this.value = '';
+      });
+      node.addEventListener('blur', function(){
+        if (this.value === '') { this.value = 0; compute(); }
+      });
+    }
     node.addEventListener('input', compute);
     node.addEventListener('change', compute);
   });
@@ -844,9 +1008,15 @@
   el('cap20').addEventListener('change', function(){ if (this.checked) el('cap10').checked=false; compute(); });
 
   el('resetBtn').addEventListener('click', function(){
-    if (!confirm('Clear all fields and saved data on this device?')) return;
+    if (!confirm('Reset every field to 0 and clear saved data on this device?')) return;
+    ids.forEach(id=>{
+      const node = el(id);
+      if (node.type === 'checkbox') node.checked = false;
+      else if (node.tagName === 'SELECT') node.selectedIndex = 0;
+      else node.value = 0;
+    });
     localStorage.removeItem(STORAGE_KEY);
-    location.reload();
+    compute();
   });
 
   el('exportJpgBtn').addEventListener('click', function(){
