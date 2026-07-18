@@ -87,8 +87,9 @@
   #trapStage:empty{display:none;}
   #trapStage canvas{display:block;}
   /* card hover lift */
-  .card{transition:transform .18s ease, box-shadow .18s ease;}
-  .card:hover{transform:translateY(-1px);box-shadow:0 6px 18px rgba(0,0,0,0.3);}
+  /* One consistent, gentle shadow on every card, at rest and on hover alike —
+     no lift/jump animation, so shadows never look uneven from card to card. */
+  .card:hover{box-shadow:var(--shadow);}
   @media (prefers-reduced-motion: reduce){
     header.masthead::after{animation:none;}
     .card, .card:hover{transform:none;transition:none;}
@@ -180,9 +181,47 @@
   .card h2::after{background:linear-gradient(90deg, rgba(91,141,217,0.35), transparent);}
   .hicon{flex:none;opacity:.9;}
 
-  .field{margin-bottom:12px;}
-  .field label{display:block;font-size:12.5px;color:var(--ink-muted);margin-bottom:5px;}
+  /* ---------- info icon: long explanations tuck behind a small (i), shown on
+     click or hover instead of always taking up space on the card ---------- */
+  .info-btn{
+    display:inline-flex;align-items:center;justify-content:center;
+    width:15px;height:15px;border-radius:50%;flex:none;
+    background:var(--surface-3);border:1px solid var(--line);color:var(--ink-muted);
+    font-family:'JetBrains Mono',monospace;font-size:10px;font-style:italic;font-weight:700;
+    cursor:pointer;vertical-align:middle;margin-left:4px;padding:0;line-height:1;
+  }
+  .info-btn:hover, .info-btn[aria-expanded="true"]{background:var(--gold);border-color:var(--gold);color:#0d131e;}
+  .info-tip{
+    display:none;position:absolute;z-index:60;max-width:280px;
+    background:var(--surface-3);border:1px solid var(--line);border-radius:8px;
+    box-shadow:var(--shadow);padding:10px 12px;font-size:12px;line-height:1.5;
+    color:var(--ink-muted);
+  }
+  .field label{display:block;font-size:12.5px;color:var(--ink-muted);margin-bottom:8px;text-align:center;}
+  /* every label in a card centers over its input/select, with the same even
+     gap (8px) below it and the same rhythm (14px) above a new section */
+  .section-label{display:block;font-size:12.5px;color:var(--ink-muted);text-align:center;margin:14px 0 8px;}
+  .row3 > div, .row2 > div{text-align:center;}
+  input[type=number], input[type=text], select{text-align:center;}
   .field .hint{font-size:11px;color:var(--ink-faint);margin-top:4px;}
+  .field{margin-bottom:12px;}
+  /* Troop Totals + March Capacities read better left-aligned (longer labels,
+     single-column layout) — keep their headers centered but pull the fields
+     themselves back to the left, unlike the shorter Ratios card. */
+  .grid-stack-item[gs-id="troops"] .field label,
+  .grid-stack-item[gs-id="capacities"] .field label,
+  .grid-stack-item[gs-id="troops"] .section-label,
+  .grid-stack-item[gs-id="capacities"] .section-label{text-align:left;}
+  .grid-stack-item[gs-id="troops"] input[type=number],
+  .grid-stack-item[gs-id="troops"] input[type=text],
+  .grid-stack-item[gs-id="troops"] select,
+  .grid-stack-item[gs-id="capacities"] input[type=number],
+  .grid-stack-item[gs-id="capacities"] input[type=text],
+  .grid-stack-item[gs-id="capacities"] select{text-align:left;}
+  .grid-stack-item[gs-id="troops"] .row2 > div,
+  .grid-stack-item[gs-id="troops"] .row3 > div,
+  .grid-stack-item[gs-id="capacities"] .row2 > div,
+  .grid-stack-item[gs-id="capacities"] .row3 > div{text-align:left;}
   input[type=number], input[type=text], select{
     width:100%;background:var(--surface-2);border:1px solid var(--line);border-radius:7px;
     color:var(--ink);padding:9px 10px;font-family:'JetBrains Mono',monospace;font-size:14px;
@@ -191,16 +230,20 @@
   input[type=number]:focus-visible, input[type=text]:focus-visible, input[type=checkbox]:focus-visible, select:focus-visible, summary:focus-visible, button:focus-visible{
     outline:2px solid var(--gold);outline-offset:2px;
   }
-  .row3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;}
+  .row3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:12px;}
   .row2{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;}
-  .check{display:flex;align-items:center;gap:9px;font-size:13.5px;color:var(--ink);padding:9px 0;cursor:pointer;}
+  /* .field, .check and .row2/.row3 all carry the same 12px rhythm, so a checkbox,
+     a row of selects, or a plain field all leave an identical, even gap
+     before whatever comes next in the card — no more mismatched spacing. */
+  .check{display:flex;align-items:center;gap:9px;font-size:13.5px;color:var(--ink);padding:7px 0;cursor:pointer;margin-bottom:5px;}
+  .row2{margin-bottom:12px;}
   .check input{width:18px;height:18px;accent-color:var(--gold);cursor:pointer;flex:none;}
   .subgroup{border-top:1px dashed var(--line);margin-top:14px;padding-top:14px;}
   .swatch-label{display:flex;align-items:center;gap:6px;}
   .swatch{width:9px;height:9px;border-radius:2px;flex:none;}
   .swatch.inf{background:var(--infantry);} .swatch.cav{background:var(--cavalry);} .swatch.arch{background:var(--archers);}
 
-  .ratio-check{font-family:'JetBrains Mono',monospace;font-size:12px;padding:6px 10px;border-radius:6px;margin-top:6px;display:inline-block;}
+  .ratio-check{font-family:'JetBrains Mono',monospace;font-size:12px;padding:6px 10px;border-radius:6px;margin-top:0;display:inline-block;}
   .ratio-check.ok{background:rgba(111,174,106,0.15);color:var(--ok);}
   .ratio-check.bad{background:rgba(209,104,94,0.15);color:var(--danger);}
 
@@ -229,9 +272,6 @@
   .tchip{display:inline-flex;align-items:center;gap:4px;font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--ink-muted);white-space:nowrap;}
 
   /* ---------- Results ---------- */
-  .plan-header{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:12px;flex-wrap:wrap;gap:8px;}
-  .plan-header h2{justify-content:flex-start;text-align:left;}
-  .plan-header h2::before, .plan-header h2::after{display:none;}
   .totals-strip{display:flex;gap:14px;flex-wrap:wrap;font-family:'JetBrains Mono',monospace;font-size:12.5px;color:var(--ink-muted);}
   .totals-strip b{color:var(--ink);font-weight:600;}
 
@@ -250,8 +290,8 @@
   .table-scroll{overflow-x:auto;border:1px solid var(--line);border-radius:9px;-webkit-overflow-scrolling:touch;max-width:1000px;margin:0 auto;}
   table.marches-table{width:100%;border-collapse:collapse;min-width:560px;}
   table.marches-table thead th{
-    font-family:'JetBrains Mono',monospace;font-size:11.5px;text-transform:uppercase;letter-spacing:.05em;
-    color:var(--ink-muted);text-align:left;padding:11px 14px;background:var(--surface-3);
+    font-family:'JetBrains Mono',monospace;font-size:13.5px;text-transform:uppercase;letter-spacing:.05em;
+    color:var(--ink-muted);text-align:left;padding:13px 14px;background:var(--surface-3);
     border-bottom:1px solid var(--line);white-space:nowrap;
   }
   table.marches-table thead th.num{text-align:right;}
@@ -259,7 +299,7 @@
   table.marches-table thead th.col-cav{color:var(--cavalry);}
   table.marches-table thead th.col-arch{color:var(--archers);}
   table.marches-table tbody td{
-    padding:12px 14px;font-family:'JetBrains Mono',monospace;font-size:16px;
+    padding:10px 14px;font-family:'JetBrains Mono',monospace;font-size:16px;
     border-bottom:1px solid var(--line);vertical-align:middle;
   }
   table.marches-table tbody tr:last-child td{border-bottom:none;}
@@ -267,8 +307,8 @@
   table.marches-table td.col-inf{color:var(--infantry);}
   table.marches-table td.col-cav{color:var(--cavalry);}
   table.marches-table td.col-arch{color:var(--archers);}
-  table.marches-table td.name-cell{font-family:'Big Shoulders Display',sans-serif;font-weight:700;font-size:18px;letter-spacing:.02em;text-transform:uppercase;white-space:nowrap;}
-  table.marches-table .mini-bar{height:6px;border-radius:3px;overflow:hidden;display:flex;background:var(--surface-3);margin-top:6px;width:110px;}
+  table.marches-table td.name-cell{font-family:'Big Shoulders Display',sans-serif;font-weight:700;font-size:18px;letter-spacing:.02em;text-transform:uppercase;white-space:nowrap;line-height:1.1;}
+  table.marches-table .mini-bar{height:6px;border-radius:3px;overflow:hidden;display:flex;background:var(--surface-3);margin-top:4px;width:110px;}
   table.marches-table .mini-bar span{height:100%;}
   table.marches-table .mini-bar .b-inf{background:var(--infantry);} table.marches-table .mini-bar .b-cav{background:var(--cavalry);} table.marches-table .mini-bar .b-arch{background:var(--archers);}
   tr.row-ok{background:rgba(111,174,106,0.06);}
@@ -288,6 +328,7 @@
 
   /* ---------- Buttons / data controls ---------- */
   .actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:6px;}
+  .scan-actions{display:flex;align-items:center;flex-wrap:nowrap;gap:6px;margin-bottom:12px;}
   button.btn{
     font-family:'Inter',sans-serif;font-weight:600;font-size:13px;cursor:pointer;
     border-radius:7px;padding:9px 16px;border:1px solid var(--line);
@@ -360,8 +401,6 @@
     .brand-eyebrow{justify-content:center;}
     .masthead-meta{text-align:center;max-width:100%;}
     .privacy-pill{margin-left:auto;margin-right:auto;}
-    .plan-header{justify-content:center;text-align:center;}
-    .plan-header h2{justify-content:center;text-align:center;width:100%;}
     .howto-steps{grid-template-columns:1fr;}
     .actions{justify-content:center;}
     .legend{justify-content:center;text-align:center;}
@@ -419,8 +458,6 @@
     .row3, .row2{ gap:8px; }
     .summary-grid{grid-template-columns:repeat(2,1fr);}
     .summary-grid .item .n{ font-size:17px; }
-    .plan-header{ flex-direction:column; align-items:stretch; }
-    .plan-header .btn{ width:100%; }
     .tier-row{ grid-template-columns:1fr 84px 40px; }
     .tier-row select, .tier-row input{ font-size:14px; }
     .tier-remove{ height:42px; }
@@ -479,7 +516,7 @@
 
   <!-- PLAYER PRESETS: collapsible, below the how-to -->
   <details class="howto" id="presetsCard">
-    <summary>Player Presets — save &amp; switch players</summary>
+    <summary>Player Presets — save &amp; switch players <button class="info-btn" data-tip="Save separate setups (different players, or your own scenarios) and switch between them instantly. Stored only in this browser — nothing is shared. Export lets you pick which presets to include; Import moves them to another device or browser.">i</button></summary>
     <div class="howto-body">
         <div class="field">
           <label>Load a saved preset</label>
@@ -496,7 +533,6 @@
           <button class="btn" id="presetImportBtn"><svg class="bicon" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20V7"/><path d="M6 12l6-6 6 6"/></svg> Import Presets</button>
           <input type="file" id="presetImportFile" accept="application/json">
         </div>
-        <div class="hint" style="margin-top:10px;">Save separate setups (different players, or your own scenarios) and switch between them instantly. Stored only in this browser — nothing is shared. Export lets you pick which presets to include; Import moves them to another device or browser.</div>
     </div>
   </details>
 
@@ -505,13 +541,12 @@
   <div class="grid-stack" id="dashGrid">
     <div class="grid-stack-item" gs-id="troops" gs-x="0" gs-y="0" gs-w="4" gs-h="60"><div class="grid-stack-item-content">
       <div class="card">
-        <h2><svg class="hicon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l7 3v6c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6z"/></svg>Troop Totals</h2>
-        <p class="hint" style="margin:-4px 0 10px;">Enter troops by level: pick a tier, type how many you have, and the total adds up for you — no calculator needed. Your highest tiers are sent to the Host Rally first.</p>
-        <div class="actions" style="margin-bottom:12px;justify-content:center;">
-          <button class="btn" id="scanBtn" type="button" style="width:100%;">📷 Scan a screenshot (beta)</button>
+        <h2><svg class="hicon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l7 3v6c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6z"/></svg>Troop Totals <button class="info-btn" data-tip="Enter troops by level: pick a tier, type how many you have, and the total adds up for you — no calculator needed. Your highest tiers are sent to the Host Rally first.">i</button></h2>
+        <div class="scan-actions">
+          <button class="btn" id="scanBtn" type="button" style="flex:1;">📷 Scan a screenshot (beta)</button>
+          <button class="info-btn" data-tip="Reads troop numbers straight from a game screenshot — you review everything before it's applied. OCR runs in your browser; your screenshot never leaves this device.">i</button>
           <input type="file" id="scanFile" accept="image/*" multiple style="display:none;">
         </div>
-        <p class="hint" style="margin:-2px 0 12px;">Reads troop numbers straight from a game screenshot — you review everything before it's applied. OCR runs in your browser; your screenshot never leaves this device.</p>
 
         <div class="troop-block">
           <label class="swatch-label"><span class="swatch inf"></span>Infantry</label>
@@ -549,12 +584,11 @@
 
     <div class="grid-stack-item" gs-id="data" gs-x="0" gs-y="60" gs-w="4" gs-h="28"><div class="grid-stack-item-content">
       <div class="card">
-        <h2><svg class="hicon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><ellipse cx="12" cy="5" rx="7" ry="2.6"/><path d="M5 5v14c0 1.4 3.1 2.6 7 2.6s7-1.2 7-2.6V5"/><path d="M5 12c0 1.4 3.1 2.6 7 2.6s7-1.2 7-2.6"/></svg>Your Data</h2>
-        <div class="actions">
+        <h2><svg class="hicon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><ellipse cx="12" cy="5" rx="7" ry="2.6"/><path d="M5 5v14c0 1.4 3.1 2.6 7 2.6s7-1.2 7-2.6V5"/><path d="M5 12c0 1.4 3.1 2.6 7 2.6s7-1.2 7-2.6"/></svg>Your Data <button class="info-btn" data-tip="Auto-saves to this browser as you type. Use the Player Presets panel up top to back up or move your data — Export/Import Presets covers everything, including whatever's currently in the form if you save it as a preset first.">i</button></h2>
+        <div class="actions" style="justify-content:center;">
           <button class="btn danger-outline" id="resetBtn">Reset All</button>
           <button class="btn" id="resetLayoutBtn">Reset Layout</button>
         </div>
-        <div class="hint" style="margin-top:10px;">Auto-saves to this browser as you type. Use the Player Presets panel up top to back up or move your data — Export/Import Presets covers everything, including whatever's currently in the form if you save it as a preset first.</div>
       </div>
     </div></div>
 
@@ -578,7 +612,7 @@
             <option value="30000">Lv. 10 (30,000)</option>
           </select>
         </div>
-        <div class="field"><label>Host Minimum Infantry <span class="hint">(applies to Host Rally only)</span></label><input type="number" min="0" id="hostMinInfantry" value="5000"></div>
+        <div class="field"><label>Host Minimum Infantry <button class="info-btn" data-tip="Applies to Host Rally only.">i</button></label><input type="number" min="0" id="hostMinInfantry" value="5000"></div>
         <div class="subgroup">
           <div class="field"><label>Joiner Capacity Limit</label><input type="number" min="0" id="joinerCapacity" value="100000"></div>
           <div class="field"><label>No Hero March Capacity</label><input type="number" min="0" id="noHeroCapacity" value="0"></div>
@@ -603,7 +637,7 @@
               <option value="15000">Lv. 10 (15,000)</option>
             </select>
           </div>
-          <div class="row2" style="margin-top:8px;">
+          <div class="row2">
             <div class="check"><input type="checkbox" id="marshalOn"><label for="marshalOn">Marshal</label></div>
             <select id="marshalAmt">
               <option value="2500">2,500 (Inner Castle)</option>
@@ -611,9 +645,8 @@
             </select>
           </div>
           <div class="subgroup">
-            <div class="check"><input type="checkbox" id="cap10"><label for="cap10">City Bonus deployment cap 10%</label></div>
+            <div class="check"><input type="checkbox" id="cap10"><label for="cap10">City Bonus deployment cap 10% <button class="info-btn" data-tip="Only one cap applies — selecting one turns the other off.">i</button></label></div>
             <div class="check"><input type="checkbox" id="cap20"><label for="cap20">City Bonus deployment cap 20%</label></div>
-            <div class="hint">Only one cap applies — selecting one turns the other off.</div>
           </div>
         </div>
       </div>
@@ -623,30 +656,30 @@
       <div class="card">
         <h2><svg class="hicon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/><circle cx="9" cy="7" r="2" fill="#232e44"/><circle cx="15" cy="12" r="2" fill="#232e44"/><circle cx="8" cy="17" r="2" fill="#232e44"/></svg>Ratios</h2>
         <a href="https://frakinator.streamlit.app/" target="_blank" rel="noopener" class="btn frakinator-link">Open Frakinator ↗</a>
-        <label style="font-size:12.5px;color:var(--ink-muted);display:block;margin-top:12px;">Host Ratio (from Frakinator)</label>
-        <div class="row3" style="margin-top:6px;">
+        <label class="section-label">Host Ratio <button class="info-btn" type="button" data-tip="Get this from Frakinator: enter your host's attack/lethality stats there, and it tells you the optimal Infantry/Cavalry/Archer split for your specific hero and gear setup.">i</button></label>
+        <div class="row3">
           <div><label class="hint swatch-label"><span class="swatch inf"></span>Inf %</label><input type="number" min="0" max="100" id="hInf" value="3"></div>
           <div><label class="hint swatch-label"><span class="swatch cav"></span>Cav %</label><input type="number" min="0" max="100" id="hCav" value="34"></div>
           <div><label class="hint swatch-label"><span class="swatch arch"></span>Arch %</label><input type="number" min="0" max="100" id="hArch" value="63"></div>
         </div>
-        <div id="hostRatioCheck" class="ratio-check ok">Host ratio: 100% OK</div>
+        <div style="text-align:center;"><div id="hostRatioCheck" class="ratio-check ok">Host ratio: 100% OK</div></div>
 
         <div class="subgroup">
-          <label style="font-size:12.5px;color:var(--ink-muted);">Joiner Ratio <span class="hint">(optional - set this to use percentages instead of Floors. Leave all three at 0 to use Floors below, which is simpler if you don't want to think about percentages.)</span></label>
-          <div class="row3" style="margin-top:6px;">
+          <label class="section-label" style="margin-top:0;">Joiner Ratio <button class="info-btn" data-tip="Optional — set this to use percentages instead of Floors. Leave all three at 0 to use Floors below, which is simpler if you don't want to think about percentages.">i</button></label>
+          <div class="row3">
             <div><label class="hint swatch-label"><span class="swatch inf"></span>Inf %</label><input type="number" min="0" max="100" id="jInf" value="0"></div>
             <div><label class="hint swatch-label"><span class="swatch cav"></span>Cav %</label><input type="number" min="0" max="100" id="jCav" value="0"></div>
             <div><label class="hint swatch-label"><span class="swatch arch"></span>Arch %</label><input type="number" min="0" max="100" id="jArch" value="0"></div>
           </div>
-          <div id="joinerRatioCheck" class="ratio-check ok">Joiner ratio: 100% OK</div>
+          <div style="text-align:center;"><div id="joinerRatioCheck" class="ratio-check ok">Joiner ratio: 100% OK</div></div>
 
-          <label style="font-size:12.5px;color:var(--ink-muted);display:block;margin-top:14px;">Per-Joiner Troop Floors <span class="hint">(used automatically whenever the Ratio above is left at 0. Inf floor is an EXACT amount per march; Cavalry and Archers fill the rest, favoring Archers - the research-backed 1/10/89-style default. Cav/Arch floors are still a minimum on top of that. Community-tested Bear Hunt guides recommend keeping at least 5,000 Infantry in absolute numbers, which is why Inf floor defaults to 5,000. If you set a Ratio above instead, these Floors are ignored entirely.)</span></label>
-          <div class="row3" style="margin-top:6px;">
+          <label class="section-label">Per-Joiner Troop Floors <button class="info-btn" data-tip="Used automatically whenever the Ratio above is left at 0. Inf floor is an EXACT amount per march; Cavalry and Archers fill the rest, favoring Archers — the research-backed 1/10/89-style default. Cav/Arch floors are still a minimum on top of that. Community-tested Bear Hunt guides recommend keeping at least 5,000 Infantry in absolute numbers, which is why Inf floor defaults to 5,000. If you set a Ratio above instead, these Floors are ignored entirely.">i</button></label>
+          <div class="row3">
             <div><label class="hint swatch-label"><span class="swatch inf"></span>Inf floor (exact)</label><input type="number" min="0" id="jInfFloor" value="5000"></div>
             <div><label class="hint swatch-label"><span class="swatch cav"></span>Cav floor (min)</label><input type="number" min="0" id="jCavFloor" value="0"></div>
             <div><label class="hint swatch-label"><span class="swatch arch"></span>Arch floor (min)</label><input type="number" min="0" id="jArchFloor" value="0"></div>
           </div>
-          <div id="infantryFloorNotice" class="ratio-check bad" style="display:none;margin-top:8px;"></div>
+          <div style="text-align:center;"><div id="infantryFloorNotice" class="ratio-check bad" style="display:none;margin-top:8px;"></div></div>
         </div>
       </div>
     </div></div>
@@ -660,15 +693,15 @@
 
     <div class="grid-stack-item" gs-id="formations" gs-x="0" gs-y="160" gs-w="12" gs-h="90"><div class="grid-stack-item-content">
       <div class="card">
-    <div class="plan-header">
-      <h2 style="margin:0;"><svg class="hicon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4.5 4.5L17 17"/><path d="M19.5 4.5L7 17"/><path d="M15.5 17.5l3 3M8.5 17.5l-3 3"/><path d="M14.5 19h3.5v-3.5M9.5 19H6v-3.5"/></svg>Recommended Formations</h2>
+    <h2><svg class="hicon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4.5 4.5L17 17"/><path d="M19.5 4.5L7 17"/><path d="M15.5 17.5l3 3M8.5 17.5l-3 3"/><path d="M14.5 19h3.5v-3.5M9.5 19H6v-3.5"/></svg>Recommended Formations</h2>
+    <div class="actions" style="justify-content:center;margin-bottom:14px;">
       <button class="btn gold" id="exportJpgBtn">📷 Export as JPG</button>
     </div>
-    <div class="legend">
+    <div class="legend" style="justify-content:center;">
       <span class="swatch-label"><span class="swatch inf"></span>Infantry</span>
       <span class="swatch-label"><span class="swatch cav"></span>Cavalry</span>
       <span class="swatch-label"><span class="swatch arch"></span>Archers</span>
-      <span class="legend-note">Joiner 5 &amp; 6 are kept identical whenever possible — any leftover troops from uneven division go to Joiner 1-4 instead.</span>
+      <button class="info-btn" data-tip="Joiner 5 & 6 are kept identical whenever possible — any leftover troops from uneven division go to Joiner 1-4 instead.">i</button>
     </div>
     <div id="marchesCapture">
       <div class="table-scroll">
@@ -1412,11 +1445,15 @@
   el('cap10').addEventListener('change', function(){ if (this.checked) el('cap20').checked=false; compute(); });
   el('cap20').addEventListener('change', function(){ if (this.checked) el('cap10').checked=false; compute(); });
 
+  // Reset All restores these checkboxes to their original ON state instead of
+  // unchecking them — Host Rally and Apply Boosts are on by default for every
+  // new player, same as when the page is opened fresh.
+  const DEFAULT_CHECKED_ON = ['useHostRally', 'applyBoosts'];
   el('resetBtn').addEventListener('click', function(){
     if (!confirm('Reset every field to 0 and clear saved data on this device?')) return;
     ids.forEach(id=>{
       const node = el(id);
-      if (node.type === 'checkbox') node.checked = false;
+      if (node.type === 'checkbox') node.checked = DEFAULT_CHECKED_ON.indexOf(id) !== -1;
       else if (node.tagName === 'SELECT') node.selectedIndex = 0;
       else node.value = 0;
     });
@@ -1622,6 +1659,56 @@
     };
     reader.readAsText(file);
   });
+
+  // ---------- info icons: explanation text tucked behind a small (i) ----------
+  // One shared floating tooltip, positioned next to whichever icon is active.
+  // Opens on hover (desktop) or click/tap (works everywhere, including mobile
+  // where there's no real hover), closes on outside click, Escape, or scroll.
+  (function initInfoTips(){
+    const tip = document.createElement('div');
+    tip.className = 'info-tip';
+    tip.setAttribute('role', 'tooltip');
+    document.body.appendChild(tip);
+    let openBtn = null;
+
+    function place(btn){
+      const r = btn.getBoundingClientRect();
+      const vw = document.documentElement.clientWidth;
+      let left = r.left + window.scrollX;
+      const tipWidth = 280;
+      if (left + tipWidth > window.scrollX + vw - 12) left = window.scrollX + vw - tipWidth - 12;
+      left = Math.max(8, left);
+      tip.style.left = left + 'px';
+      tip.style.top = (r.bottom + window.scrollY + 6) + 'px';
+    }
+    function show(btn){
+      tip.textContent = btn.getAttribute('data-tip') || '';
+      tip.style.display = 'block';
+      place(btn);
+      openBtn = btn;
+      btn.setAttribute('aria-expanded', 'true');
+    }
+    function hide(){
+      if (openBtn) openBtn.setAttribute('aria-expanded', 'false');
+      tip.style.display = 'none';
+      openBtn = null;
+    }
+    document.querySelectorAll('.info-btn').forEach(function(btn){
+      btn.setAttribute('type', 'button');
+      btn.setAttribute('aria-expanded', 'false');
+      btn.addEventListener('mouseenter', function(){ show(btn); });
+      btn.addEventListener('mouseleave', function(){ if (openBtn === btn) hide(); });
+      btn.addEventListener('click', function(e){
+        e.stopPropagation();
+        e.preventDefault(); // so an icon inside a <summary> doesn't also toggle it
+        if (openBtn === btn){ hide(); } else { show(btn); }
+      });
+      btn.addEventListener('keydown', function(e){ if (e.key === 'Escape') hide(); });
+    });
+    document.addEventListener('click', hide);
+    window.addEventListener('scroll', hide, true);
+    window.addEventListener('resize', hide);
+  })();
 
   // ---------- screenshot scan (beta): OCR a game screenshot into the fields ----------
   // Tesseract.js is loaded from CDN only when the user first taps Scan, so the
@@ -1880,6 +1967,28 @@
           try { dashGrid.engine.nodes.slice().forEach(function(n){ dashGrid.resizeToContent(n.el); }); } catch(e){}
         }, 60);
       });
+
+      // The real fix for cards that used to load "cut off": rather than guessing
+      // when content has finished laying out (fonts, added rows, a stale saved
+      // height from before this update, etc.), watch each card's actual rendered
+      // height and resize its grid item the moment it changes. This makes every
+      // card correct on first load, no matter what caused the old height to be
+      // wrong, and keeps it correct as tier rows are added/removed later too.
+      if ('ResizeObserver' in window){
+        let resizing = false;
+        const ro = new ResizeObserver(function(entries){
+          if (resizing) return;
+          resizing = true;
+          requestAnimationFrame(function(){
+            entries.forEach(function(entry){
+              const item = entry.target.closest('.grid-stack-item');
+              if (item) { try { dashGrid.resizeToContent(item); } catch(e){} }
+            });
+            resizing = false;
+          });
+        });
+        document.querySelectorAll('.grid-stack-item-content').forEach(function(c){ ro.observe(c); });
+      }
     } else {
       el('resetLayoutBtn').style.display = 'none';
     }
