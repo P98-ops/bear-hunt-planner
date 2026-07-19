@@ -82,6 +82,56 @@
     background:linear-gradient(180deg, rgba(24,31,46,0.45) 0%, rgba(24,31,46,0.74) 55%, rgba(30,40,58,0.97) 100%);
   }
   header.masthead > *:not(.masthead-art){position:relative;z-index:1;}
+  /* ---------- Jeff the bear: cute hovering mascot, top-right of the masthead ---------- */
+  header.masthead > .jeff-corner{
+    position:absolute;top:50%;right:6%;transform:translateY(-50%);z-index:3;
+    display:flex;flex-direction:column;align-items:center;gap:2px;
+    pointer-events:auto;cursor:pointer;user-select:none;-webkit-tap-highlight-color:transparent;
+  }
+  .jeff-bob{ animation:jeffBob 3.2s ease-in-out infinite; transform-origin:50% 70%; transition:transform .18s ease; }
+  /* reactive: hover or tap and Jeff guards his honey — arms clamp the pot, brows
+     drop into a frown, and he hunches down over it until you let go */
+  .jeff-bear .jf-guard{ display:none; }
+  .jeff-corner:hover .jf-guard, .jeff-corner.guarding .jf-guard{ display:inline; }
+  .jeff-corner:hover .jf-happy, .jeff-corner.guarding .jf-happy{ display:none; }
+  .jeff-corner:hover .jeff-bob, .jeff-corner.guarding .jeff-bob{
+    animation:none; transform:translateY(5px) scale(0.95);
+  }
+  .jeff-bear{
+    width:124px;height:auto;display:block;
+    filter:
+      drop-shadow(1.6px 0 0 #fff7e9) drop-shadow(-1.6px 0 0 #fff7e9)
+      drop-shadow(0 1.6px 0 #fff7e9) drop-shadow(0 -1.6px 0 #fff7e9)
+      drop-shadow(0 5px 7px rgba(0,0,0,0.45));
+  }
+  .jeff-eye{ transform-origin:center; }
+  .jeff-name{
+    font-family:'Big Shoulders Display',sans-serif;font-weight:700;
+    font-size:14px;letter-spacing:.06em;text-transform:uppercase;white-space:nowrap;
+    color:var(--cream-gold);text-shadow:0 1px 2px rgba(0,0,0,0.6);margin-top:-1px;
+  }
+  .jeff-credit{
+    font-family:'JetBrains Mono',monospace;font-size:9.5px;white-space:nowrap;
+    color:#9fb0ca;text-shadow:0 1px 2px rgba(0,0,0,0.6);
+  }
+  .jeff-credit b{color:var(--cream-gold);font-weight:600;}
+  @keyframes jeffBob{
+    0%,100%{ transform:translateY(0) rotate(-2.5deg); }
+    50%{ transform:translateY(-7px) rotate(2.5deg); }
+  }
+  @media (prefers-reduced-motion: reduce){ .jeff-bob{animation:none;} }
+  @media (max-width:900px){
+    header.masthead > .jeff-corner{ top:4px;right:4px;transform:none; }
+    .jeff-bear{ width:74px; }
+  }
+  @media (max-width:640px){
+    .jeff-bear{ width:58px; }
+    .jeff-name{ font-size:11px; }
+    .jeff-credit{ font-size:8px; }
+  }
+  @media (max-width:430px){
+    header.masthead > .jeff-corner{ display:none; }
+  }
   /* 3D bear trap (three.js) above the title */
   #trapStage{height:104px;display:flex;justify-content:center;align-items:center;margin-bottom:-6px;}
   #trapStage:empty{display:none;}
@@ -247,6 +297,43 @@
   .ratio-check.ok{background:rgba(111,174,106,0.15);color:var(--ok);}
   .ratio-check.bad{background:rgba(209,104,94,0.15);color:var(--danger);}
 
+  /* ---------- Best split finder (Frakinator-style) ---------- */
+  .hero-note{font-size:11.5px;line-height:1.5;color:var(--ink-muted);margin:8px 0 4px;text-align:center;}
+  .hero-note b{color:var(--gold-soft);font-weight:700;}
+  .hero-note .muted{color:var(--ink-faint);}
+  /* collapsible Best Split Finder — obvious banner toggle, collapsed by default */
+  .finder-collapse{border:1px solid var(--line);border-radius:10px;background:var(--surface-2);margin:0 0 6px;}
+  .finder-collapse > summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:10px;padding:12px 14px;border-radius:10px;}
+  .finder-collapse > summary::-webkit-details-marker{display:none;}
+  .finder-collapse > summary:hover{background:var(--surface-3);}
+  .finder-collapse[open] > summary{border-bottom:1px solid var(--line);border-radius:10px 10px 0 0;background:var(--surface-3);}
+  .finder-chevron{flex:none;transition:transform .18s ease;color:var(--gold-soft);}
+  .finder-collapse[open] > summary .finder-chevron{transform:rotate(90deg);}
+  .finder-sum-text{display:flex;flex-direction:column;flex:1;min-width:0;text-align:left;}
+  .finder-sum-title{font-family:'Big Shoulders Display',sans-serif;font-weight:700;font-size:16px;letter-spacing:.03em;text-transform:uppercase;color:var(--gold-soft);line-height:1.15;}
+  .finder-sum-sub{font-size:10.5px;color:var(--ink-faint);}
+  .finder-body{padding:12px 14px 14px;}
+  .frak-credit{margin-top:16px;padding-top:12px;border-top:1px dashed var(--line);text-align:center;}
+  .frak-credit p{font-size:11px;color:var(--ink-faint);line-height:1.55;margin:0 0 10px;}
+  .frak-credit a.creditlink{color:var(--gold-soft);text-decoration:underline;}
+  .finder-hint{font-size:11px;line-height:1.5;color:var(--ink-faint);text-align:center;margin:2px 0 12px;}
+  .stat-grid{display:grid;grid-template-columns:56px 1fr 1fr 1fr;gap:6px;align-items:center;margin-top:8px;}
+  .stat-grid .stat-h{display:flex;align-items:center;justify-content:center;gap:4px;font-size:11px;color:var(--ink-muted);}
+  .stat-grid .stat-lbl{font-size:11px;color:var(--ink-muted);text-align:left;}
+  .stat-grid input{padding:6px 4px;font-size:12px;text-align:center;}
+  .dmg-compare{margin-top:14px;}
+  .dmg-compare summary{cursor:pointer;font-size:12px;color:var(--gold-soft);text-align:center;list-style:none;padding:6px;}
+  .dmg-compare summary::-webkit-details-marker{display:none;}
+  .dmg-compare summary:hover{color:var(--gold);}
+  .dmg-list{margin-top:10px;display:flex;flex-direction:column;gap:8px;}
+  .dmg-row{display:grid;grid-template-columns:1fr 46px;gap:8px;align-items:center;}
+  .dmg-row .dmg-lbl{font-family:'JetBrains Mono',monospace;font-size:11.5px;color:var(--ink-muted);}
+  .dmg-row.best .dmg-lbl{color:var(--gold-soft);font-weight:700;}
+  .dmg-row .dmg-pct{font-family:'JetBrains Mono',monospace;font-size:11.5px;text-align:right;color:var(--ink);}
+  .dmg-bar{grid-column:1 / -1;height:7px;border-radius:4px;background:var(--surface-3);overflow:hidden;}
+  .dmg-bar span{display:block;height:100%;background:linear-gradient(90deg,var(--infantry),var(--archers));border-radius:4px;}
+  .dmg-row.best .dmg-bar span{background:linear-gradient(90deg,var(--gold-soft),var(--gold));}
+
   /* ---------- Tier entry ---------- */
   .troop-block{margin-bottom:16px;}
   .troop-block > .swatch-label{font-weight:600;color:var(--ink);font-size:14px;margin-bottom:2px;}
@@ -341,13 +428,13 @@
   button.btn.gold:hover{background:var(--gold-soft);}
   button.btn.danger-outline{color:var(--danger);border-color:rgba(209,104,94,0.4);background:transparent;}
   button.btn.danger-outline:hover{background:rgba(209,104,94,0.1);}
-  a.btn.frakinator-link{
-    display:flex;align-items:center;justify-content:center;gap:6px;text-decoration:none;
-    width:100%;padding:11px 16px;margin-bottom:12px;box-sizing:border-box;
+  a.btn.frak-check{
+    display:inline-flex;align-items:center;justify-content:center;gap:6px;text-decoration:none;
+    padding:8px 16px;box-sizing:border-box;
     background:var(--surface-2);border:1px solid #4d82d6;color:var(--gold-soft);
-    border-radius:7px;font-size:13.5px;
+    border-radius:7px;font-size:12px;
   }
-  a.btn.frakinator-link:hover{background:var(--surface-3);border-color:var(--gold-soft);color:#b7d1f7;}
+  a.btn.frak-check:hover{background:var(--surface-3);border-color:var(--gold-soft);color:#b7d1f7;}
   #presetImportFile{display:none;}
 
   footer{margin-top:30px;text-align:center;color:#9fb0cc;font-size:12px;line-height:1.6;padding:0 10px;}
@@ -483,6 +570,63 @@
     <div class="masthead-meta">
       <span>Planner by <b style="color:var(--cream-gold);">#1081 [ODY]P98</b></span>
       <span class="privacy-pill"><span class="dot"></span> No account, no server, nothing shared</span>
+    </div>
+    <div class="jeff-corner">
+      <div class="jeff-bob">
+        <svg class="jeff-bear" viewBox="0 0 140 162" xmlns="http://www.w3.org/2000/svg" aria-label="Jeff the bear hugging his honey pot" role="img">
+          <circle cx="30" cy="21" r="19" fill="#a4713f" stroke="#4c2f1b" stroke-width="3.6"/>
+          <circle cx="110" cy="21" r="19" fill="#a4713f" stroke="#4c2f1b" stroke-width="3.6"/>
+          <circle cx="30" cy="22" r="10" fill="#cb9c66"/>
+          <circle cx="110" cy="22" r="10" fill="#cb9c66"/>
+          <ellipse cx="70" cy="124" rx="33" ry="26" fill="#a4713f" stroke="#4c2f1b" stroke-width="3.6"/>
+          <ellipse cx="36" cy="142" rx="18" ry="14" fill="#a4713f" stroke="#4c2f1b" stroke-width="3.6"/>
+          <ellipse cx="104" cy="142" rx="18" ry="14" fill="#a4713f" stroke="#4c2f1b" stroke-width="3.6"/>
+          <ellipse cx="34" cy="144" rx="7.5" ry="6.5" fill="#6e4626"/>
+          <circle cx="26.5" cy="135" r="2.8" fill="#6e4626"/><circle cx="34" cy="132.8" r="2.8" fill="#6e4626"/><circle cx="41.5" cy="135" r="2.8" fill="#6e4626"/>
+          <ellipse cx="106" cy="144" rx="7.5" ry="6.5" fill="#6e4626"/>
+          <circle cx="98.5" cy="135" r="2.8" fill="#6e4626"/><circle cx="106" cy="132.8" r="2.8" fill="#6e4626"/><circle cx="113.5" cy="135" r="2.8" fill="#6e4626"/>
+          <path d="M70 13 C 41 13, 26 29, 24.5 49 C 23.5 59, 19 64, 19.5 74 C 20 91, 41 101, 70 101 C 99 101, 120 91, 120.5 74 C 121 64, 116.5 59, 115.5 49 C 114 29, 99 13, 70 13 Z" fill="#a4713f" stroke="#4c2f1b" stroke-width="3.6" stroke-linejoin="round"/>
+          <ellipse cx="70" cy="76" rx="26.5" ry="17.5" fill="#f6e2ba"/>
+          <circle cx="28" cy="74" r="8" fill="#f4a9b3"/>
+          <circle cx="112" cy="74" r="8" fill="#f4a9b3"/>
+          <path d="M64 65 h12 q3 0 1.5 2.7 l-5 5.9 q-2.5 2.9 -5 0 l-5 -5.9 q-1.5 -2.7 1.5 -2.7 Z" fill="#4c2f1b"/>
+          <path d="M70 73 v4" stroke="#4c2f1b" stroke-width="2" stroke-linecap="round"/>
+          <rect x="54" y="98" width="32" height="9" rx="4" fill="#cd9049" stroke="#4c2f1b" stroke-width="3"/>
+          <path d="M57 107 Q48 118 54 127 Q58 134 70 134 Q82 134 86 127 Q92 118 83 107 Z" fill="#cd9049" stroke="#4c2f1b" stroke-width="3" stroke-linejoin="round"/>
+          <path d="M55 99 Q55 95.5 59 95.5 L81 95.5 Q85 95.5 85 99 L85 103 q-2.5 4.5 -5 0.5 q-2 5 -5 1 q-2.5 5.5 -5.5 0.8 q-2.5 4.2 -5 -0.3 q-3 4 -4.5 -1 Z" fill="#f5b63a" stroke="#4c2f1b" stroke-width="1.8" stroke-linejoin="round"/>
+          <path d="M61 106 q-1.6 8 1.8 11 q3.4 -3 1.4 -11 Z" fill="#f5b63a" stroke="#4c2f1b" stroke-width="1.5"/>
+          <text x="70" y="126.5" text-anchor="middle" fill="#4c2f1b" style="font-family:'Big Shoulders Display',sans-serif;font-weight:700;font-size:10px;letter-spacing:.5px;">HONEY</text>
+          <g class="jf-happy">
+            <path d="M40 102 Q33 109 45 112" fill="none" stroke="#4c2f1b" stroke-width="15" stroke-linecap="round"/>
+            <path d="M40 102 Q33 109 45 112" fill="none" stroke="#a4713f" stroke-width="8.8" stroke-linecap="round"/>
+            <circle cx="49.5" cy="111" r="7.2" fill="#a4713f" stroke="#4c2f1b" stroke-width="3.2"/>
+            <path d="M100 102 Q107 109 95 112" fill="none" stroke="#4c2f1b" stroke-width="15" stroke-linecap="round"/>
+            <path d="M100 102 Q107 109 95 112" fill="none" stroke="#a4713f" stroke-width="8.8" stroke-linecap="round"/>
+            <circle cx="90.5" cy="111" r="7.2" fill="#a4713f" stroke="#4c2f1b" stroke-width="3.2"/>
+            <ellipse cx="46" cy="60" rx="4.3" ry="5.6" fill="#4c2f1b"/>
+            <ellipse cx="94" cy="60" rx="4.3" ry="5.6" fill="#4c2f1b"/>
+            <circle cx="47.7" cy="57.6" r="1.7" fill="#fff"/><circle cx="44.6" cy="61.8" r="0.85" fill="#fff"/>
+            <circle cx="95.7" cy="57.6" r="1.7" fill="#fff"/><circle cx="92.6" cy="61.8" r="0.85" fill="#fff"/>
+            <path d="M64.5 79.5 q5.5 5.5 11 0" fill="none" stroke="#4c2f1b" stroke-width="2.3" stroke-linecap="round"/>
+          </g>
+          <g class="jf-guard">
+            <path d="M40 102 Q36 106 56 103" fill="none" stroke="#4c2f1b" stroke-width="15" stroke-linecap="round"/>
+            <path d="M40 102 Q36 106 56 103" fill="none" stroke="#a4713f" stroke-width="8.8" stroke-linecap="round"/>
+            <circle cx="60" cy="100" r="7.2" fill="#a4713f" stroke="#4c2f1b" stroke-width="3.2"/>
+            <path d="M100 102 Q104 106 84 103" fill="none" stroke="#4c2f1b" stroke-width="15" stroke-linecap="round"/>
+            <path d="M100 102 Q104 106 84 103" fill="none" stroke="#a4713f" stroke-width="8.8" stroke-linecap="round"/>
+            <circle cx="80" cy="100" r="7.2" fill="#a4713f" stroke="#4c2f1b" stroke-width="3.2"/>
+            <path d="M39 47 L54 53 M101 47 L86 53" stroke="#4c2f1b" stroke-width="3" stroke-linecap="round"/>
+            <circle cx="46" cy="62" r="4.1" fill="#4c2f1b"/>
+            <circle cx="94" cy="62" r="4.1" fill="#4c2f1b"/>
+            <circle cx="47.4" cy="60.4" r="1.3" fill="#fff"/>
+            <circle cx="95.4" cy="60.4" r="1.3" fill="#fff"/>
+            <path d="M64 81 q6 -4.5 12 0" fill="none" stroke="#4c2f1b" stroke-width="2.4" stroke-linecap="round"/>
+          </g>
+        </svg>
+      </div>
+      <span class="jeff-name">Jeff the Bear</span>
+      <span class="jeff-credit">Placed by <b>#1081 [ODY]LUNA</b></span>
     </div>
   </header>
 
@@ -655,8 +799,58 @@
     <div class="grid-stack-item" gs-id="ratios" gs-x="8" gs-y="0" gs-w="4" gs-h="100"><div class="grid-stack-item-content">
       <div class="card">
         <h2><svg class="hicon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/><circle cx="9" cy="7" r="2" fill="#232e44"/><circle cx="15" cy="12" r="2" fill="#232e44"/><circle cx="8" cy="17" r="2" fill="#232e44"/></svg>Ratios</h2>
-        <a href="https://frakinator.streamlit.app/" target="_blank" rel="noopener" class="btn frakinator-link">Open Frakinator ↗</a>
-        <label class="section-label">Host Ratio <button class="info-btn" type="button" data-tip="Get this from Frakinator: enter your host's attack/lethality stats there, and it tells you the optimal Infantry/Cavalry/Archer split for your specific hero and gear setup.">i</button></label>
+        <details class="finder-collapse">
+          <summary>
+            <svg class="finder-chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>
+            <span class="finder-sum-text"><span class="finder-sum-title">Bear Ratio Optimizer</span><span class="finder-sum-sub">Frakinator-style ratio calculator · tap to open/close</span></span>
+            <button class="info-btn" type="button" data-tip="Works exactly like Frakinator's Bear-ratio tab. Enter your rally leader's Attack% and Lethality% for each troop type, pick your troop-specific heroes, and set your tier — it returns the best Infantry / Cavalry / Archer split. Only heroes whose skill favours one troop type are listed (Petra, Amadeus etc. buff all troops equally, so they don't change the split — same as Frakinator).">i</button>
+          </summary>
+          <div class="finder-body">
+          <p class="finder-hint">Enter your rally leader's stats per troop type — read them from a Terror-rally battle report (with your bear hero + gear). If one troop type has higher stats (usually from type-specific gear), the split leans toward it. Equal numbers cancel out. <button class="info-btn" type="button" data-tip="What moves the split: (1) differences between troop types in your attack/lethality — e.g. archer-lethality gear makes archery stronger than infantry; (2) your troop-specific heroes; (3) tier (archers gain more at higher tiers). Stats that are equal across all three types cancel and don't change the split, so if you don't know yours, leaving them equal still gives a good heroes-only answer.">i</button></p>
+
+          <div class="stat-grid">
+            <div class="stat-h"></div><div class="stat-h"><span class="swatch inf"></span>Inf</div><div class="stat-h"><span class="swatch cav"></span>Cav</div><div class="stat-h"><span class="swatch arch"></span>Arch</div>
+            <div class="stat-lbl">Attack %</div>
+            <input type="number" id="atkInf" value="400"><input type="number" id="atkCav" value="400"><input type="number" id="atkArch" value="400">
+            <div class="stat-lbl">Leth %</div>
+            <input type="number" id="lethInf" value="400"><input type="number" id="lethCav" value="400"><input type="number" id="lethArch" value="400">
+          </div>
+
+          <div class="row3" style="margin-top:12px;">
+            <div><label class="hint swatch-label"><span class="swatch inf"></span>Inf hero</label>
+              <select id="heroInf"><option value="none">Other</option><option value="alcar">Alcar</option></select></div>
+            <div><label class="hint swatch-label"><span class="swatch cav"></span>Cav hero</label>
+              <select id="heroCav"><option value="none">Other</option><option value="margot">Margot</option><option value="thrud">Thrud</option></select></div>
+            <div><label class="hint swatch-label"><span class="swatch arch"></span>Arch hero</label>
+              <select id="heroArch"><option value="none">Other</option><option value="rosa">Rosa</option></select></div>
+          </div>
+
+          <div class="field" style="margin-top:12px;"><label>Troop tier <button class="info-btn" type="button" data-tip="Archers do 10% extra to the infantry bear (Ranged Strike), and pick up another 10% at each higher tier bracket. Higher tier = archers weighted more heavily, matching Frakinator's tier options.">i</button></label>
+            <select id="troopTierSel">
+              <option value="t1">T1 – T6</option>
+              <option value="t7">T7 – TG2</option>
+              <option value="tg3">TG3 – TG4</option>
+              <option value="tg5">TG5 – TG7</option>
+            </select>
+          </div>
+
+          <div id="heroSkillNote" class="hero-note"></div>
+          <div style="text-align:center;"><div id="optimalPreview" class="ratio-check ok" style="margin-top:2px;">Best split → Host Ratio: 3 / 31 / 66</div></div>
+          <p class="finder-hint" style="margin:8px 0 0;">Filled into your Host Ratio automatically ↓</p>
+
+          <details class="dmg-compare">
+            <summary>See how splits compare <button class="info-btn" type="button" data-tip="Runs the real Bear-Trap damage formula for your chosen hero and shows how much damage each split does versus the best one. Numbers are relative (best = 100%), so you don't need to enter any stats — the ranking is the same whatever your gear. This is the same idea as Frakinator's chart.">i</button></summary>
+            <div id="dmgCompareList" class="dmg-list"></div>
+          </details>
+
+          <div class="frak-credit">
+            <p>Split-ratio logic adapted from <a class="creditlink" href="https://frakinator.streamlit.app/" target="_blank" rel="noopener">Frakinator</a>, made by [685] Frak — all credit for the original tool goes to them.</p>
+            <a class="btn frak-check" href="https://frakinator.streamlit.app/" target="_blank" rel="noopener">Fact-check on Frakinator ↗</a>
+          </div>
+          </div>
+        </details>
+
+        <label class="section-label">Host Ratio <button class="info-btn" type="button" data-tip="The Infantry/Cavalry/Archer split used for the Host Rally. Pick a hero above and tap 'Use this split', or just type your own here.">i</button></label>
         <div class="row3">
           <div><label class="hint swatch-label"><span class="swatch inf"></span>Inf %</label><input type="number" min="0" max="100" id="hInf" value="3"></div>
           <div><label class="hint swatch-label"><span class="swatch cav"></span>Cav %</label><input type="number" min="0" max="100" id="hCav" value="34"></div>
@@ -728,7 +922,7 @@
     </div></div>
   </div>
 
-  <footer>Planner built by #1081 [ODY]P98. Runs entirely in your browser — your informations never leave this device. · <span id="lastSaved"></span></footer>
+  <footer>Planner built by #1081 [ODY]P98 · Placed by #1081 [ODY]LUNA. Runs entirely in your browser — your informations never leave this device. · <span id="lastSaved"></span></footer>
 </div>
 
 <div class="modal-overlay" id="exportModalOverlay">
@@ -765,7 +959,9 @@
   const ids = ['infantry','cavalry','archers','useHostRally','hostCapacity','valora','hostMinInfantry',
     'joinerCapacity','noHeroCapacity','joiningMarches','applyBoosts',
     'hInf','hCav','hArch','jInf','jCav','jArch','jInfFloor','jCavFloor','jArchFloor',
-    'bisonOn','bisonAmt','marshalOn','marshalAmt','cap10','cap20'];
+    'bisonOn','bisonAmt','marshalOn','marshalAmt','cap10','cap20',
+    'heroInf','heroCav','heroArch','troopTierSel',
+    'atkInf','atkCav','atkArch','lethInf','lethCav','lethArch'];
 
   const STORAGE_KEY = 'bearHuntWarRoom.v1';
 
@@ -919,11 +1115,16 @@
     return Math.max(0, n);
   }
 
+  // ids whose value is text (a hero key), not a number
+  const STRING_IDS = { heroInf:1, heroCav:1, heroArch:1, troopTierSel:1 };
+
   function readState(){
     const s = {};
     ids.forEach(id=>{
       const node = el(id);
-      s[id] = node.type === 'checkbox' ? node.checked : readNum(node);
+      if (node.type === 'checkbox') s[id] = node.checked;
+      else if (STRING_IDS[id]) s[id] = node.value;
+      else s[id] = readNum(node);
     });
     s.troopTiers = {};
     TROOP_TYPES.forEach(type=>{
@@ -1461,6 +1662,7 @@
     TROOP_TYPES.forEach(type=>{ renderTierRows(type); syncTypeTotal(type); });
     localStorage.removeItem(STORAGE_KEY);
     compute();
+    if (window.__refreshOptimalPreview) window.__refreshOptimalPreview();
   });
 
   // wire the "Add level" buttons for each troop type
@@ -1518,6 +1720,7 @@
     if (presets[name]){
       writeState(presets[name]);
       compute();
+      if (window.__refreshOptimalPreview) window.__refreshOptimalPreview();
     }
   });
 
@@ -1708,6 +1911,178 @@
     document.addEventListener('click', hide);
     window.addEventListener('scroll', hide, true);
     window.addEventListener('resize', hide);
+  })();
+
+  // ---------- Jeff guards his honey on touch (hover handles mouse via CSS) ----------
+  (function initJeff(){
+    const jc = document.querySelector('.jeff-corner');
+    if (!jc) return;
+    let t = null;
+    jc.addEventListener('pointerdown', function(){
+      jc.classList.add('guarding');
+      clearTimeout(t);
+      t = setTimeout(function(){ jc.classList.remove('guarding'); }, 1600);
+    });
+  })();
+
+  // ---------- Best Split Finder (faithful to Frakinator's Bear-ratio tab) ----------
+  // Frakinator's own formula: total bear damage = sum over troop types of
+  //   base_att_i * A_i * sqrt(troops_i),  A_i = (1+attack%_i)(1+lethality%_i).
+  // base_att ratio is 1:3:4 (inf:cav:arch); archers get x1.1 vs the infantry bear,
+  // plus another x1.1 at T7+/TG3+. Since damage ~ c_i*sqrt(f_i), the optimal split is
+  // the closed form f_i = c_i^2 / sum(c_j^2) (identical to a brute-force search).
+  // Two input paths, both matching Frakinator:
+  //   - attack%/lethality% per type: your real stats (from a Terror-rally battle
+  //     report). This is where GEAR bonuses belong (Rosa's Aeolian lethality, etc.).
+  //   - hero pickers: ONLY heroes whose skill favours one troop type (Alcar, Margot,
+  //     Thrud, Rosa). Heroes that buff all troops equally (Petra, Amadeus) are left
+  //     out on purpose — they cancel and never change the split.
+  (function initOptimalCalc(){
+    // Per-hero multipliers on each troop's coefficient, CALIBRATED against Frakinator's
+    // own output (not the raw tooltips — Frakinator's effective Alcar infantry boost is
+    // ~x3.5, while Rosa x1.30 and Alcar's cav/arch x1.10 match their tooltips). Multiple
+    // heroes on the same troop multiply together. Alcar & Rosa are pinned to Frakinator
+    // reference cases; Margot & Thrud are best estimates pending calibration data.
+    const HERO_DATA = {
+      alcar:  { label:'Alcar', mult:{inf:3.5, cav:1.1, arch:1.1},
+        short:'<b>Alcar:</b> big Infantry boost (Cav & Arch +10%)', verified:true },
+      rosa:   { label:'Rosa', mult:{inf:1, cav:1, arch:1.3},
+        short:'<b>Rosa:</b> Archer Attack +30% (Golden Rhythm)', verified:true },
+      margot: { label:'Margot', mult:{inf:1, cav:1.5, arch:1},
+        short:'<b>Margot:</b> Cavalry ≈ +50% (estimate, not yet calibrated)', verified:false },
+      thrud:  { label:'Thrud', mult:{inf:1.15, cav:1.2, arch:1.15},
+        short:'<b>Thrud:</b> Inf & Arch +15%, Cav +20% (estimate)', verified:false },
+    };
+    // Per-tier base coefficients K_i (base attack ratio x archer ranged bonus), read
+    // straight off Frakinator's no-hero / equal-stat output for each tier bracket:
+    //   T1-T6 -> 3/31/66,  T7-TG2 & TG3-TG4 -> 3/27/70,  TG5-TG7 -> 2/27/71.
+    // (K_i is proportional to sqrt of each type's share in that no-hero split.)
+    const BASE_K = {
+      t1:  { inf:1, cav:3.2146, arch:4.6904 },
+      t7:  { inf:1, cav:3.0000, arch:4.8305 },
+      tg3: { inf:1, cav:3.0000, arch:4.8305 },
+      tg5: { inf:1, cav:3.6742, arch:5.9582 }
+    };
+    const SLOTS = ['heroInf','heroCav','heroArch'];
+    const TYPES = ['inf','cav','arch'];
+    const STAT = { atk:{inf:'atkInf',cav:'atkCav',arch:'atkArch'}, leth:{inf:'lethInf',cav:'lethCav',arch:'lethArch'} };
+    function num(id){ const n = parseFloat(el(id).value); return isFinite(n) ? n : 0; }
+
+    // the heroes currently chosen across the three rally slots
+    function chosen(){
+      return SLOTS.map(function(id){ return HERO_DATA[el(id).value]; }).filter(Boolean);
+    }
+    function updateNote(){
+      const hs = chosen();
+      if (!hs.length){
+        el('heroSkillNote').innerHTML = '<span class="muted">Pick the heroes in your rally and we’ll suggest the split. Numbers are calibrated to match Frakinator.</span>';
+        return;
+      }
+      el('heroSkillNote').innerHTML = hs.map(function(h){ return h.short; }).join('<br>')
+        + '<br><span class="muted">Only troop-specific skills shift the split; all-squad buffs are left out on purpose.</span>';
+    }
+    // effective per-troop coefficient, matching Frakinator's model:
+    //   c_i = K_i(tier) * (1+attack%_i) * (1+lethality%_i) * heroMult_i
+    // K_i(tier) carries the base attack ratio + archer ranged bonus for that tier.
+    // Your attack%/lethality% capture gear & research (type-specific gear like archer
+    // lethality lives here). Each chosen hero's calibrated multiplier stacks on top.
+    function coeffs(){
+      const hs = chosen();
+      const K = BASE_K[el('troopTierSel').value] || BASE_K.t1;
+      const c = {};
+      TYPES.forEach(function(t){
+        let heroMult = 1;
+        hs.forEach(function(h){ heroMult *= (h.mult[t] || 1); });
+        const atk = num(STAT.atk[t]);   // your real attack% for this troop (gear/research)
+        const leth = num(STAT.leth[t]); // your real lethality% for this troop (gear/research)
+        c[t] = K[t] * (1+atk/100) * (1+leth/100) * heroMult;
+      });
+      return c;
+    }
+    // closed-form optimum, rounded to integers that sum to 100 (largest remainder)
+    function optimal(){
+      const c = coeffs();
+      const sq = { inf:c.inf*c.inf, cav:c.cav*c.cav, arch:c.arch*c.arch };
+      const sum = sq.inf + sq.cav + sq.arch || 1;
+      const raw = { inf:sq.inf/sum*100, cav:sq.cav/sum*100, arch:sq.arch/sum*100 };
+      const floor = {}, rem = []; let used = 0;
+      TYPES.forEach(function(t){ floor[t] = Math.floor(raw[t]); used += floor[t]; rem.push([t, raw[t]-floor[t]]); });
+      rem.sort(function(a,b){ return b[1]-a[1]; });
+      let left = 100 - used;
+      for (let i=0; i<left; i++) floor[rem[i % 3][0]] += 1;
+      return floor;
+    }
+    // total (relative) 10-round Bear damage for a split, from the real formula:
+    // damage_i ∝ effectiveAttack_i × √(troops_i). Constants (√bearSize, ×10 rounds,
+    // bear defense) are the same for every split, so they drop out of a comparison.
+    function bearDamage(c, f){
+      return c.inf*Math.sqrt(f.inf) + c.cav*Math.sqrt(f.cav) + c.arch*Math.sqrt(f.arch);
+    }
+    function applyToHostRatio(o){
+      el('hInf').value = o.inf; el('hCav').value = o.cav; el('hArch').value = o.arch;
+      // fire the existing input handlers so the ratio-check + compute + save all run
+      ['hInf','hCav','hArch'].forEach(function(id){ el(id).dispatchEvent(new Event('input', { bubbles:true })); });
+    }
+    // Update the preview + comparison. When the user is actually interacting with the
+    // calculator (apply=true) the result is pushed straight into the Host Ratio fields
+    // below — no button to press. On the initial page load we DON'T auto-apply, so a
+    // Host Ratio the user typed or saved earlier is preserved until they touch this.
+    function refreshPreview(apply){
+      const o = optimal();
+      el('optimalPreview').textContent = 'Best split → Host Ratio: ' + o.inf + ' / ' + o.cav + ' / ' + o.arch;
+      renderCompare(o);
+      if (apply) applyToHostRatio(o);
+    }
+    // show how the recommended split and a few common ones stack up (best = 100%)
+    function renderCompare(opt){
+      const c = coeffs();
+      const rows = [
+        { lbl:'Best '+opt.inf+'/'+opt.cav+'/'+opt.arch, f:opt, best:true },
+        { lbl:'1 / 10 / 89', f:{inf:1,cav:10,arch:89} },
+        { lbl:'10 / 10 / 80', f:{inf:10,cav:10,arch:80} },
+        { lbl:'All Archers', f:{inf:0,cav:0,arch:100} },
+        { lbl:'Even split', f:{inf:33,cav:33,arch:34} }
+      ];
+      const best = bearDamage(c, {inf:opt.inf/100,cav:opt.cav/100,arch:opt.arch/100}) || 1;
+      rows.forEach(function(r){
+        r.pct = 100 * bearDamage(c, {inf:r.f.inf/100,cav:r.f.cav/100,arch:r.f.arch/100}) / best;
+      });
+      // keep the recommended first, sort the rest by strength
+      const head = rows[0];
+      const rest = rows.slice(1).sort(function(a,b){ return b.pct - a.pct; });
+      const list = [head].concat(rest);
+      el('dmgCompareList').innerHTML = list.map(function(r){
+        return '<div class="dmg-row' + (r.best?' best':'') + '">'
+          + '<div class="dmg-lbl">' + r.lbl + '</div>'
+          + '<div class="dmg-pct">' + r.pct.toFixed(1) + '%</div>'
+          + '<div class="dmg-bar"><span style="width:' + Math.max(2, r.pct).toFixed(1) + '%"></span></div>'
+          + '</div>';
+      }).join('');
+    }
+
+    // wiring — heroes, tier, and the 6 stat inputs recompute AND auto-apply live
+    SLOTS.concat(['troopTierSel']).forEach(function(id){
+      el(id).addEventListener('change', function(){
+        updateNote();
+        refreshPreview(true);
+        save();
+      });
+    });
+    ['atkInf','atkCav','atkArch','lethInf','lethCav','lethArch'].forEach(function(id){
+      el(id).addEventListener('input', function(){ refreshPreview(true); save(); });
+    });
+    // opening the calculator applies its current result to the Host Ratio too
+    const finderDetails = document.querySelector('details.finder-collapse');
+    if (finderDetails){
+      finderDetails.addEventListener('toggle', function(){
+        if (finderDetails.open) refreshPreview(true);
+      });
+    }
+
+    updateNote();
+    refreshPreview();
+    // expose so the global load routine can refresh after restoring saved values
+    window.__refreshOptimalPreview = function(){ updateNote(); refreshPreview(); };
   })();
 
   // ---------- screenshot scan (beta): OCR a game screenshot into the fields ----------
@@ -1917,6 +2292,7 @@
   TROOP_TYPES.forEach(type=>{ renderTierRows(type); syncTypeTotal(type); });
   refreshPresetSelect(getLastPreset());
   compute();
+  if (window.__refreshOptimalPreview) window.__refreshOptimalPreview();
 
   // ---------- draggable dashboard (gridstack) ----------
   // Cards can be dragged by their title and resized; the arrangement is saved to
@@ -1989,6 +2365,19 @@
         });
         document.querySelectorAll('.grid-stack-item-content').forEach(function(c){ ro.observe(c); });
       }
+
+      // A <details> expanding/collapsing changes the card's needed height, but
+      // gridstack pins the content box, so the ResizeObserver above can't see the
+      // overflow (which showed up as a card that didn't grow/shrink cleanly — the
+      // "glitch"). Refit that card's height explicitly on every open/close instead.
+      document.querySelectorAll('.grid-stack-item details').forEach(function(det){
+        det.addEventListener('toggle', function(){
+          const item = det.closest('.grid-stack-item');
+          if (!item) return;
+          try { dashGrid.resizeToContent(item); } catch(e){}
+          setTimeout(function(){ try { dashGrid.resizeToContent(item); } catch(e){} }, 50);
+        });
+      });
     } else {
       el('resetLayoutBtn').style.display = 'none';
     }
